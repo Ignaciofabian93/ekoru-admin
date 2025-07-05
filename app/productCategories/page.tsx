@@ -80,6 +80,135 @@ export default function ProductCategoriesPage() {
       ) => `${value} ${item.weightUnit}`,
     },
     {
+      key: "keywords" as keyof ProductCategory,
+      header: "Palabras Clave",
+      render: (value: ProductCategory[keyof ProductCategory]) => {
+        return value
+          ? (value as string[]).join(", ")
+          : "No hay palabras clave definidas";
+      },
+    },
+    {
+      key: "firstMaterialTypeId" as keyof ProductCategory,
+      header: "Primer Material",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.firstMaterialType
+          ? item.firstMaterialType.materialType
+          : "N/A";
+      },
+    },
+    {
+      key: "firstMaterialTypeQuantity" as keyof ProductCategory,
+      header: "Cantidad (%)",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.firstMaterialTypeQuantity
+          ? `${item.firstMaterialTypeQuantity}%`
+          : "N/A";
+      },
+    },
+    {
+      key: "secondMaterialTypeId" as keyof ProductCategory,
+      header: "Segundo Material",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.secondMaterialType
+          ? item.secondMaterialType.materialType
+          : "N/A";
+      },
+    },
+    {
+      key: "secondMaterialTypeQuantity" as keyof ProductCategory,
+      header: "Cantidad (%)",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.secondMaterialTypeQuantity
+          ? `${item.secondMaterialTypeQuantity}%`
+          : "N/A";
+      },
+    },
+    {
+      key: "thirdMaterialTypeId" as keyof ProductCategory,
+      header: "Tercer Material",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.thirdMaterialType
+          ? item.thirdMaterialType.materialType
+          : "N/A";
+      },
+    },
+    {
+      key: "thirdMaterialTypeQuantity" as keyof ProductCategory,
+      header: "Cantidad (%)",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.thirdMaterialTypeQuantity
+          ? `${item.thirdMaterialTypeQuantity}%`
+          : "N/A";
+      },
+    },
+    {
+      key: "fourthMaterialTypeId" as keyof ProductCategory,
+      header: "Cuarto Material",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.fourthMaterialType
+          ? item.fourthMaterialType.materialType
+          : "N/A";
+      },
+    },
+    {
+      key: "fourthMaterialTypeQuantity" as keyof ProductCategory,
+      header: "Cantidad (%)",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.fourthMaterialTypeQuantity
+          ? `${item.fourthMaterialTypeQuantity}%`
+          : "N/A";
+      },
+    },
+    {
+      key: "fifthMaterialTypeId" as keyof ProductCategory,
+      header: "Quinto Material",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.fifthMaterialType
+          ? item.fifthMaterialType.materialType
+          : "N/A";
+      },
+    },
+    {
+      key: "fifthMaterialTypeQuantity" as keyof ProductCategory,
+      header: "Cantidad (%)",
+      render: (
+        value: ProductCategory[keyof ProductCategory],
+        item: ProductCategory
+      ) => {
+        return item.fifthMaterialTypeQuantity
+          ? `${item.fifthMaterialTypeQuantity}%`
+          : "N/A";
+      },
+    },
+    {
       key: "actions" as keyof ProductCategory,
       header: "Acciones",
       render: (_: unknown, item: ProductCategory) => (
@@ -209,6 +338,16 @@ export default function ProductCategoriesPage() {
       size: category.size,
       weightUnit: category.weightUnit,
       averageWeight: category.averageWeight,
+      firstMaterialTypeId: category.firstMaterialTypeId,
+      firstMaterialTypeQuantity: category.firstMaterialTypeQuantity,
+      secondMaterialTypeId: category.secondMaterialTypeId,
+      secondMaterialTypeQuantity: category.secondMaterialTypeQuantity,
+      thirdMaterialTypeId: category.thirdMaterialTypeId,
+      thirdMaterialTypeQuantity: category.thirdMaterialTypeQuantity,
+      fourthMaterialTypeId: category.fourthMaterialTypeId,
+      fourthMaterialTypeQuantity: category.fourthMaterialTypeQuantity,
+      fifthMaterialTypeId: category.fifthMaterialTypeId,
+      fifthMaterialTypeQuantity: category.fifthMaterialTypeQuantity,
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);

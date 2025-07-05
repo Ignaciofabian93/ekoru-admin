@@ -10,8 +10,6 @@ export async function GetDepartments() {
   };
   try {
     const response = await fetch(`${URL}/departments`, options);
-    console.log("Response:", response);
-
     const data: Department[] = await response.json();
     return data;
   } catch (error) {

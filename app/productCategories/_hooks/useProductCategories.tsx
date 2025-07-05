@@ -19,6 +19,8 @@ export default function useProductCategories() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("productCategories", productCategories);
+
   useEffect(() => {
     fetchData();
   }, []);

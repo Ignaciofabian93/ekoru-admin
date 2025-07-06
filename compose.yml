@@ -7,8 +7,6 @@ services:
     container_name: ekoru-admin
     ports:
       - "3100:3000"
-    env_file:
-      - .env
     networks:
       - ekoru-network
 

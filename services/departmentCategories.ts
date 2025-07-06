@@ -13,10 +13,7 @@ export default async function GetDepartmentCategories() {
     const data: DepartmentCategory[] = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar obtener las categorías de departamento:",
-      error
-    );
+    console.error("Error al intentar obtener las categorías de departamento:", error);
   }
 }
 
@@ -32,16 +29,11 @@ export async function GetDepartmentCategoryById(id: string) {
     const data: DepartmentCategory = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar obtener la categoría de departamento:",
-      error
-    );
+    console.error("Error al intentar obtener la categoría de departamento:", error);
   }
 }
 
-export async function CreateDepartmentCategory(
-  departmentCategory: DepartmentCategory
-) {
+export async function CreateDepartmentCategory(departmentCategory: DepartmentCategory) {
   const options: RequestInit = {
     method: "POST",
     headers: {
@@ -54,17 +46,11 @@ export async function CreateDepartmentCategory(
     const data: DepartmentCategory = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar crear la categoría de departamento:",
-      error
-    );
+    console.error("Error al intentar crear la categoría de departamento:", error);
   }
 }
 
-export async function UpdateDepartmentCategory(
-  id: number,
-  departmentCategory: DepartmentCategory
-) {
+export async function UpdateDepartmentCategory(id: number, departmentCategory: DepartmentCategory) {
   const options: RequestInit = {
     method: "PUT",
     headers: {
@@ -77,10 +63,7 @@ export async function UpdateDepartmentCategory(
     const data: DepartmentCategory = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar actualizar la categoría de departamento:",
-      error
-    );
+    console.error("Error al intentar actualizar la categoría de departamento:", error);
   }
 }
 
@@ -96,16 +79,10 @@ export async function DeleteDepartmentCategory(id: number) {
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar la categoría de departamento:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar la categoría de departamento:", response.statusText);
       return false;
     }
   } catch (error) {
-    console.error(
-      "Error al intentar eliminar la categoría de departamento:",
-      error
-    );
+    console.error("Error al intentar eliminar la categoría de departamento:", error);
   }
 }

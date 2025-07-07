@@ -7,16 +7,14 @@ export default async function GetProductCategories() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/productCategories`, options);
     const data: ProductCategory[] = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar obtener las categorías de producto:",
-      error
-    );
+    console.error("Error al intentar obtener las categorías de producto:", error);
   }
 }
 
@@ -26,6 +24,7 @@ export async function GetProductCategoryById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/productCategories/${id}`, options);
@@ -42,6 +41,7 @@ export async function CreateProductCategory(productCategory: ProductCategory) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(productCategory),
   };
   try {
@@ -53,15 +53,13 @@ export async function CreateProductCategory(productCategory: ProductCategory) {
   }
 }
 
-export async function UpdateProductCategory(
-  id: number,
-  productCategory: ProductCategory
-) {
+export async function UpdateProductCategory(id: number, productCategory: ProductCategory) {
   const options: RequestInit = {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(productCategory),
   };
   try {
@@ -69,10 +67,7 @@ export async function UpdateProductCategory(
     const data: ProductCategory = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar actualizar la categoría de producto:",
-      error
-    );
+    console.error("Error al intentar actualizar la categoría de producto:", error);
   }
 }
 
@@ -82,22 +77,17 @@ export async function DeleteProductCategory(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/productCategories/${id}`, options);
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar la categoría de producto:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar la categoría de producto:", response.statusText);
       return false;
     }
   } catch (error) {
-    console.error(
-      "Error al intentar eliminar la categoría de producto:",
-      error
-    );
+    console.error("Error al intentar eliminar la categoría de producto:", error);
   }
 }

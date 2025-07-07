@@ -7,6 +7,7 @@ export default async function GetCities() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/cities`, options);
@@ -23,6 +24,7 @@ export async function GetCityById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/cities/${id}`, options);
@@ -39,6 +41,7 @@ export async function CreateCity(city: City) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(city),
   };
   try {
@@ -56,6 +59,7 @@ export async function UpdateCity(id: number, city: City) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(city),
   };
   try {
@@ -73,16 +77,14 @@ export async function DeleteCity(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/cities/${id}`, options);
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar la ciudad:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar la ciudad:", response.statusText);
       return false;
     }
   } catch (error) {

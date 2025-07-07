@@ -7,6 +7,7 @@ export default async function GetRegions() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/regions`, options);
@@ -23,6 +24,7 @@ export async function GetRegionById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/regions/${id}`, options);
@@ -39,6 +41,7 @@ export async function CreateRegion(region: Region) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(region),
   };
   try {
@@ -56,6 +59,7 @@ export async function UpdateRegion(id: number, region: Region) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(region),
   };
   try {
@@ -73,16 +77,14 @@ export async function DeleteRegion(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/regions/${id}`, options);
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar la región:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar la región:", response.statusText);
       return false;
     }
   } catch (error) {

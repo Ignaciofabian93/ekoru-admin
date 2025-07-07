@@ -7,6 +7,7 @@ export default async function GetDepartmentCategories() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/departmentCategories`, options);
@@ -23,6 +24,7 @@ export async function GetDepartmentCategoryById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/departmentCategories/${id}`, options);
@@ -39,6 +41,7 @@ export async function CreateDepartmentCategory(departmentCategory: DepartmentCat
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(departmentCategory),
   };
   try {
@@ -56,6 +59,7 @@ export async function UpdateDepartmentCategory(id: number, departmentCategory: D
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(departmentCategory),
   };
   try {
@@ -73,6 +77,7 @@ export async function DeleteDepartmentCategory(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/departmentCategories/${id}`, options);

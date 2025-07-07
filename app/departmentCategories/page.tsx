@@ -25,8 +25,7 @@ export default function DepartmentCategoriesPage() {
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [showForm, setShowForm] = useState(false);
-  const [editingCategory, setEditingCategory] =
-    useState<DepartmentCategory | null>(null);
+  const [editingCategory, setEditingCategory] = useState<DepartmentCategory | null>(null);
   const [formData, setFormData] = useState<DepartmentCategoryFormData>({
     departmentCategoryName: "",
     departmentId: 0,
@@ -45,28 +44,18 @@ export default function DepartmentCategoriesPage() {
     {
       key: "department" as keyof DepartmentCategory,
       header: "Departamento",
-      render: (
-        _: DepartmentCategory[keyof DepartmentCategory],
-        item: DepartmentCategory
-      ) => item.department?.departmentName || "N/A",
+      render: (_: DepartmentCategory[keyof DepartmentCategory], item: DepartmentCategory) =>
+        item.department?.departmentName || "N/A",
     },
     {
       key: "actions" as keyof DepartmentCategory,
       header: "Acciones",
       render: (_: unknown, item: DepartmentCategory) => (
         <div className="flex space-x-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => handleEdit(item)}
-          >
+          <Button variant="secondary" size="sm" onClick={() => handleEdit(item)}>
             Editar
           </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => handleDelete(item.id)}
-          >
+          <Button variant="danger" size="sm" onClick={() => handleDelete(item.id)}>
             Eliminar
           </Button>
         </div>
@@ -102,19 +91,14 @@ export default function DepartmentCategoriesPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (
-      window.confirm(
-        "¿Estás seguro de que quieres eliminar esta categoría de departamento?"
-      )
-    ) {
+    if (window.confirm("¿Estás seguro de que quieres eliminar esta categoría de departamento?")) {
       await deleteDepartmentCategory(id);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.departmentCategoryName.trim() || !formData.departmentId)
-      return;
+    if (!formData.departmentCategoryName.trim() || !formData.departmentId) return;
 
     if (editingCategory) {
       await updateDepartmentCategory(editingCategory.id, formData);
@@ -151,12 +135,8 @@ export default function DepartmentCategoriesPage() {
     XLSX.utils.book_append_sheet(wb, ws, "DepartmentCategories");
 
     const fileName = selectedOnly
-      ? `department_categories_selected_${
-          new Date().toISOString().split("T")[0]
-        }.xlsx`
-      : `department_categories_all_${
-          new Date().toISOString().split("T")[0]
-        }.xlsx`;
+      ? `department_categories_selected_${new Date().toISOString().split("T")[0]}.xlsx`
+      : `department_categories_all_${new Date().toISOString().split("T")[0]}.xlsx`;
 
     XLSX.writeFile(wb, fileName);
   };
@@ -187,9 +167,7 @@ export default function DepartmentCategoriesPage() {
           }
         });
 
-        alert(
-          `Importadas ${jsonData.length} categorías de departamento exitosamente`
-        );
+        alert(`Importadas ${jsonData.length} categorías de departamento exitosamente`);
       } catch (error) {
         console.error("Error importing file:", error);
         alert("Error al importar el archivo. Verifica el formato.");
@@ -217,9 +195,7 @@ export default function DepartmentCategoriesPage() {
     <AppWrapper>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Gestión de Categorías de Departamento
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">Gestión de Categorías de Departamento</h1>
           <div className="flex space-x-4">
             <Button variant="success" onClick={() => setShowForm(true)}>
               Agregar Categoría
@@ -228,23 +204,15 @@ export default function DepartmentCategoriesPage() {
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>
         )}
 
         {/* Import/Export Controls */}
         <div className="bg-white p-4 rounded-lg shadow mb-6">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">
-                Exportar:
-              </span>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => exportToExcel(false)}
-              >
+              <span className="text-sm font-medium text-gray-700">Exportar:</span>
+              <Button variant="secondary" size="sm" onClick={() => exportToExcel(false)}>
                 Todos los datos
               </Button>
               <Button
@@ -257,9 +225,7 @@ export default function DepartmentCategoriesPage() {
               </Button>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">
-                Importar:
-              </span>
+              <span className="text-sm font-medium text-gray-700">Importar:</span>
               <input
                 type="file"
                 accept=".xlsx,.xls"
@@ -282,9 +248,7 @@ export default function DepartmentCategoriesPage() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
               <h2 className="text-xl font-bold mb-4">
-                {editingCategory
-                  ? "Editar Categoría de Departamento"
-                  : "Agregar Categoría de Departamento"}
+                {editingCategory ? "Editar Categoría de Departamento" : "Agregar Categoría de Departamento"}
               </h2>
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
@@ -309,10 +273,7 @@ export default function DepartmentCategoriesPage() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label
-                    htmlFor="departmentId"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
+                  <label htmlFor="departmentId" className="block text-sm font-medium text-gray-700 mb-2">
                     Departamento
                   </label>
                   <select
@@ -336,11 +297,7 @@ export default function DepartmentCategoriesPage() {
                   </select>
                 </div>
                 <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleCancel}
-                  >
+                  <Button type="button" variant="secondary" onClick={handleCancel}>
                     Cancelar
                   </Button>
                   <Button type="submit" variant="primary">

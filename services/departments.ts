@@ -7,6 +7,7 @@ export async function GetDepartments() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/departments`, options);
@@ -23,6 +24,7 @@ export async function GetDepartmentById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/departments/${id}`, options);
@@ -38,6 +40,7 @@ export async function CreateDepartment(department: Department) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(department),
   };
   try {
@@ -55,6 +58,7 @@ export async function UpdateDepartment(id: number, department: Department) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(department),
   };
   try {
@@ -72,16 +76,14 @@ export async function DeleteDepartment(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/departments/${id}`, options);
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar el departamento:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar el departamento:", response.statusText);
       return false;
     }
   } catch (error) {

@@ -7,6 +7,7 @@ export default async function GetCounties() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/counties`, options);
@@ -23,6 +24,7 @@ export async function GetCountyById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/counties/${id}`, options);
@@ -39,6 +41,7 @@ export async function CreateCounty(county: County) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(county),
   };
   try {
@@ -56,6 +59,7 @@ export async function UpdateCounty(id: number, county: County) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(county),
   };
   try {
@@ -73,16 +77,14 @@ export async function DeleteCounty(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/counties/${id}`, options);
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar el condado:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar el condado:", response.statusText);
       return false;
     }
   } catch (error) {

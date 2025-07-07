@@ -7,6 +7,7 @@ export default async function GetMaterialImpacts() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/materialImpacts`, options);
@@ -23,6 +24,7 @@ export async function GetMaterialImpactById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/materialImpacts/${id}`, options);
@@ -33,14 +35,13 @@ export async function GetMaterialImpactById(id: string) {
   }
 }
 
-export async function CreateMaterialImpact(
-  materialImpact: MaterialImpactEstimate
-) {
+export async function CreateMaterialImpact(materialImpact: MaterialImpactEstimate) {
   const options: RequestInit = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(materialImpact),
   };
   try {
@@ -52,15 +53,13 @@ export async function CreateMaterialImpact(
   }
 }
 
-export async function UpdateMaterialImpact(
-  id: number,
-  materialImpact: MaterialImpactEstimate
-) {
+export async function UpdateMaterialImpact(id: number, materialImpact: MaterialImpactEstimate) {
   const options: RequestInit = {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(materialImpact),
   };
   try {
@@ -68,10 +67,7 @@ export async function UpdateMaterialImpact(
     const data: MaterialImpactEstimate = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar actualizar el impacto de material:",
-      error
-    );
+    console.error("Error al intentar actualizar el impacto de material:", error);
   }
 }
 
@@ -81,16 +77,14 @@ export async function DeleteMaterialImpact(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/materialImpacts/${id}`, options);
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar el impacto de material:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar el impacto de material:", response.statusText);
       return false;
     }
   } catch (error) {

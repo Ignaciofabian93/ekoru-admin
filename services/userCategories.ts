@@ -7,16 +7,14 @@ export default async function GetUserCategories() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/userCategories`, options);
     const data: UserCategory[] = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar obtener las categorías de usuario:",
-      error
-    );
+    console.error("Error al intentar obtener las categorías de usuario:", error);
   }
 }
 
@@ -26,6 +24,7 @@ export async function GetUserCategoryById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/userCategories/${id}`, options);
@@ -42,6 +41,7 @@ export async function CreateUserCategory(userCategory: UserCategory) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(userCategory),
   };
   try {
@@ -53,15 +53,13 @@ export async function CreateUserCategory(userCategory: UserCategory) {
   }
 }
 
-export async function UpdateUserCategory(
-  id: number,
-  userCategory: UserCategory
-) {
+export async function UpdateUserCategory(id: number, userCategory: UserCategory) {
   const options: RequestInit = {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(userCategory),
   };
   try {
@@ -69,10 +67,7 @@ export async function UpdateUserCategory(
     const data: UserCategory = await response.json();
     return data;
   } catch (error) {
-    console.error(
-      "Error al intentar actualizar la categoría de usuario:",
-      error
-    );
+    console.error("Error al intentar actualizar la categoría de usuario:", error);
   }
 }
 
@@ -82,16 +77,14 @@ export async function DeleteUserCategory(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/userCategories/${id}`, options);
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "Error al intentar eliminar la categoría de usuario:",
-        response.statusText
-      );
+      console.error("Error al intentar eliminar la categoría de usuario:", response.statusText);
       return false;
     }
   } catch (error) {

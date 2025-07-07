@@ -5,6 +5,7 @@ import AppWrapper from "../wrapper";
 import useDepartments from "./_hooks/useDepartments";
 import Table from "@/components/table";
 import Button from "@/components/button";
+import Modal from "@/components/modal";
 import { Department } from "@/types/product";
 
 interface DepartmentFormData {
@@ -12,19 +13,11 @@ interface DepartmentFormData {
 }
 
 export default function DepartmentsPage() {
-  const {
-    departments,
-    loading,
-    error,
-    createDepartment,
-    updateDepartment,
-    deleteDepartment,
-  } = useDepartments();
+  const { departments, loading, error, createDepartment, updateDepartment, deleteDepartment } =
+    useDepartments();
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [showForm, setShowForm] = useState(false);
-  const [editingDepartment, setEditingDepartment] = useState<Department | null>(
-    null
-  );
+  const [editingDepartment, setEditingDepartment] = useState<Department | null>(null);
   const [formData, setFormData] = useState<DepartmentFormData>({
     departmentName: "",
   });
@@ -44,18 +37,10 @@ export default function DepartmentsPage() {
       header: "Acciones",
       render: (_: unknown, item: Department) => (
         <div className="flex space-x-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => handleEdit(item)}
-          >
+          <Button variant="secondary" size="sm" onClick={() => handleEdit(item)}>
             Editar
           </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => handleDelete(item.id)}
-          >
+          <Button variant="danger" size="sm" onClick={() => handleDelete(item.id)}>
             Eliminar
           </Button>
         </div>
@@ -88,9 +73,7 @@ export default function DepartmentsPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (
-      window.confirm("¿Estás seguro de que quieres eliminar este departamento?")
-    ) {
+    if (window.confirm("¿Estás seguro de que quieres eliminar este departamento?")) {
       await deleteDepartment(id);
     }
   };
@@ -122,6 +105,10 @@ export default function DepartmentsPage() {
       : departments;
 
     const ws = XLSX.utils.json_to_sheet(dataToExport);
+    // Set column widths to match header length
+    ws["!cols"] = columns.map((col) => ({
+      wch: col.header.length + 2, // +2 for padding
+    }));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Departments");
 
@@ -182,9 +169,7 @@ export default function DepartmentsPage() {
     <AppWrapper>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Gestión de Departamentos
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">Gestión de Departamentos</h1>
           <div className="flex space-x-4">
             <Button variant="success" onClick={() => setShowForm(true)}>
               Agregar Departamento
@@ -193,23 +178,15 @@ export default function DepartmentsPage() {
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>
         )}
 
         {/* Import/Export Controls */}
         <div className="bg-white p-4 rounded-lg shadow mb-6">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">
-                Exportar:
-              </span>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => exportToExcel(false)}
-              >
+              <span className="text-sm font-medium text-gray-700">Exportar:</span>
+              <Button variant="secondary" size="sm" onClick={() => exportToExcel(false)}>
                 Todos los datos
               </Button>
               <Button
@@ -222,9 +199,7 @@ export default function DepartmentsPage() {
               </Button>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">
-                Importar:
-              </span>
+              <span className="text-sm font-medium text-gray-700">Importar:</span>
               <input
                 type="file"
                 accept=".xlsx,.xls"
@@ -243,49 +218,35 @@ export default function DepartmentsPage() {
         </div>
 
         {/* Form Modal */}
-        {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h2 className="text-xl font-bold mb-4">
-                {editingDepartment
-                  ? "Editar Departamento"
-                  : "Agregar Departamento"}
-              </h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                  <label
-                    htmlFor="departmentName"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Nombre del Departamento
-                  </label>
-                  <input
-                    type="text"
-                    id="departmentName"
-                    value={formData.departmentName}
-                    onChange={(e) =>
-                      setFormData({ departmentName: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleCancel}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button type="submit" variant="primary">
-                    {editingDepartment ? "Actualizar" : "Agregar"}
-                  </Button>
-                </div>
-              </form>
+        <Modal
+          open={showForm}
+          onClose={handleCancel}
+          title={editingDepartment ? "Editar Departamento" : "Agregar Departamento"}
+        >
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="departmentName" className="block text-sm font-medium text-gray-700 mb-2">
+                Nombre del Departamento
+              </label>
+              <input
+                type="text"
+                id="departmentName"
+                value={formData.departmentName}
+                onChange={(e) => setFormData({ departmentName: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
             </div>
-          </div>
-        )}
+            <div className="flex justify-end space-x-2">
+              <Button type="button" variant="secondary" onClick={handleCancel}>
+                Cancelar
+              </Button>
+              <Button type="submit" variant="primary">
+                {editingDepartment ? "Actualizar" : "Agregar"}
+              </Button>
+            </div>
+          </form>
+        </Modal>
 
         {/* Departments Table */}
         <div className="bg-white rounded-lg shadow">

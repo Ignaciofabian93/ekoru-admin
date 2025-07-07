@@ -7,6 +7,7 @@ export default async function GetCountries() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/countries`, options);
@@ -23,6 +24,7 @@ export async function GetCountryById(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/countries/${id}`, options);
@@ -39,6 +41,7 @@ export async function CreateCountry(country: Country) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(country),
   };
   try {
@@ -56,6 +59,7 @@ export async function UpdateCountry(id: number, country: Country) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(country),
   };
   try {
@@ -73,6 +77,7 @@ export async function DeleteCountry(id: number) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
   try {
     const response = await fetch(`${URL}/countries/${id}`, options);

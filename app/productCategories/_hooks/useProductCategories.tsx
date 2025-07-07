@@ -10,16 +10,10 @@ import GetProductCategories, {
 import GetDepartmentCategories from "@/services/departmentCategories";
 
 export default function useProductCategories() {
-  const [productCategories, setProductCategories] = useState<ProductCategory[]>(
-    []
-  );
-  const [departmentCategories, setDepartmentCategories] = useState<
-    DepartmentCategory[]
-  >([]);
+  const [productCategories, setProductCategories] = useState<ProductCategory[]>([]);
+  const [departmentCategories, setDepartmentCategories] = useState<DepartmentCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  console.log("productCategories", productCategories);
 
   useEffect(() => {
     fetchData();
@@ -29,8 +23,10 @@ export default function useProductCategories() {
     setLoading(true);
     setError(null);
     try {
-      const [productCategoriesData, departmentCategoriesData] =
-        await Promise.all([GetProductCategories(), GetDepartmentCategories()]);
+      const [productCategoriesData, departmentCategoriesData] = await Promise.all([
+        GetProductCategories(),
+        GetDepartmentCategories(),
+      ]);
 
       if (productCategoriesData) {
         setProductCategories(productCategoriesData);
@@ -97,21 +93,13 @@ export default function useProductCategories() {
     }
   };
 
-  const updateProductCategory = async (
-    id: number,
-    categoryData: Partial<ProductCategory>
-  ) => {
+  const updateProductCategory = async (id: number, categoryData: Partial<ProductCategory>) => {
     setLoading(true);
     setError(null);
     try {
-      const updatedCategory = await UpdateProductCategory(
-        id,
-        categoryData as ProductCategory
-      );
+      const updatedCategory = await UpdateProductCategory(id, categoryData as ProductCategory);
       if (updatedCategory) {
-        setProductCategories((prev) =>
-          prev.map((cat) => (cat.id === id ? updatedCategory : cat))
-        );
+        setProductCategories((prev) => prev.map((cat) => (cat.id === id ? updatedCategory : cat)));
         return updatedCategory;
       }
     } catch (err) {

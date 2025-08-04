@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/navigation";
 import { LogOut, House, Database, UserRound, Settings } from "lucide-react";
 import React from "react";

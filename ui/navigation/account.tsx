@@ -1,12 +1,12 @@
 import { LogOut, Package, UserRound } from "lucide-react";
-import { useProductStore } from "@/store/product";
 import Link from "next/link";
 import MainButton from "@/ui/buttons/mainButton";
 import useLogout from "@/hooks/useLogout";
 import clsx from "clsx";
 
 type Props = {
-  isLoggedIn?: boolean;
+  isLoggedIn: boolean;
+  openProductForm: () => void;
 };
 
 const links = [
@@ -16,9 +16,8 @@ const links = [
   { href: "/profile/settings", label: "Ajustes" },
 ];
 
-const LoggedInMenu = () => {
+const LoggedInMenu = ({ openProductForm }: { openProductForm: () => void }) => {
   const { handleLogout } = useLogout();
-  const { openModal } = useProductStore();
 
   return (
     <div className="flex flex-col items-center space-y-3 px-2 py-2 text-text-800 dark:text-text-100">
@@ -43,9 +42,7 @@ const LoggedInMenu = () => {
         variant="primary"
         hasIcon
         icon={Package}
-        onClick={() => {
-          openModal("create");
-        }}
+        onClick={openProductForm}
       />
       <MainButton text="Cerrar Sesión" variant="destructive" hasIcon icon={LogOut} onClick={handleLogout} />
     </div>
@@ -68,7 +65,7 @@ const NotLoggedInMenu = () => {
   );
 };
 
-export default function AccountMenu({ isLoggedIn }: Props) {
+export default function AccountMenu({ isLoggedIn, openProductForm }: Props) {
   return (
     <div className="relative group">
       <button className="flex items-center space-x-1 p-2 text-white hover:text-primary transition-colors duration-200">
@@ -87,7 +84,9 @@ export default function AccountMenu({ isLoggedIn }: Props) {
           "transition-all duration-200"
         )}
       >
-        <div className="py-2">{isLoggedIn ? <LoggedInMenu /> : <NotLoggedInMenu />}</div>
+        <div className="py-2">
+          {isLoggedIn ? <LoggedInMenu openProductForm={openProductForm} /> : <NotLoggedInMenu />}
+        </div>
       </div>
     </div>
   );

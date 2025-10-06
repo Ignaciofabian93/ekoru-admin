@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingCart, Heart, Menu } from "lucide-react";
+import { Search, ShoppingCart, Heart, Menu, Save } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Subheader from "./subheader";
@@ -10,13 +10,22 @@ import AccountMenu from "./account";
 import SideMobileMenu from "./sideMobileMenu";
 import clsx from "clsx";
 import Input from "../inputs/input";
+import Modal from "../modals/modal";
+import ProductForm from "../forms/product";
+import MainButton from "../buttons/mainButton";
 
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isProductFormOpen, setIsProductFormOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { data } = useSessionStore();
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+  const closeProductForm = () => setIsProductFormOpen(false);
+  const openProductForm = () => setIsProductFormOpen(true);
+
+  const handleSubmit = async () => {};
 
   // Handle escape key to close mobile menu
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -106,7 +115,7 @@ export default function Navbar() {
               </div>
 
               {/* User Account */}
-              <AccountMenu isLoggedIn={!!data?.id} />
+              <AccountMenu isLoggedIn={!!data?.id} openProductForm={openProductForm} />
 
               {/* Mobile Menu Button */}
               <button
@@ -137,6 +146,39 @@ export default function Navbar() {
             />
           </div>
         </nav>
+        <Modal isOpen={isProductFormOpen} onClose={closeProductForm} title="Subir Producto" size="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+            className="space-y-6"
+          >
+            <ProductForm onSubmit={handleSubmit} mode="create" />
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+              className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4 border-t border-gray-200"
+            >
+              <MainButton
+                text="Cancelar"
+                onClick={closeProductForm}
+                disabled={false}
+                variant="outline"
+                hasIcon={false}
+              />
+              <MainButton
+                text={"Actualizar Perfil"}
+                variant="primary"
+                type="submit"
+                hasIcon
+                icon={Save}
+                onClick={handleSubmit}
+              />
+            </motion.div>
+          </motion.div>
+        </Modal>
       </header>
 
       {/* Mobile Navigation Overlay */}

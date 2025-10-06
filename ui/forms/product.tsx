@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Select from "../inputs/select";
+import Input from "../inputs/input";
 
 type ProductFormData = {
   name: string;
@@ -14,7 +15,7 @@ type ProductFormData = {
 };
 
 type Props = {
-  onSubmit: (formData: ProductFormData) => Promise<void>;
+  onSubmit: () => Promise<void>;
   isSubmitting?: boolean;
   productId?: number;
   mode?: "create" | "edit";
@@ -37,12 +38,7 @@ const conditions = [
   { value: "poor", label: "Poor" },
 ];
 
-export default function ProductForm({
-  onSubmit,
-  isSubmitting = false,
-  productId,
-  mode = "create",
-}: Props) {
+export default function ProductForm({ onSubmit, isSubmitting = false, productId, mode = "create" }: Props) {
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
     description: "",
@@ -62,10 +58,7 @@ export default function ProductForm({
     }
   }, [mode, productId]);
 
-  const handleInputChange = (
-    field: keyof ProductFormData,
-    value: string | number | File[] | string[]
-  ) => {
+  const handleInputChange = (field: keyof ProductFormData, value: string | number | File[] | string[]) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -88,45 +81,27 @@ export default function ProductForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(formData);
+    await onSubmit();
   };
 
   return (
     <form id="product-form" onSubmit={handleSubmit} className="space-y-6">
       {/* Product Name */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.1 }}
-      >
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-        >
-          Product Name *
-        </label>
-        <input
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+        <Input
           type="text"
           id="name"
           required
+          label="Nombre del Producto *"
           value={formData.name}
-          onChange={(e) => handleInputChange("name", e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-          placeholder="Enter product name"
-          disabled={isSubmitting}
+          onChange={(e) => handleInputChange("name", (e as React.ChangeEvent<HTMLInputElement>).target.value)}
+          placeholder="Ingresa el nombre del producto"
         />
       </motion.div>
 
       {/* Description */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-        >
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Description *
         </label>
         <textarea
@@ -143,15 +118,8 @@ export default function ProductForm({
 
       {/* Price and Category Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <label
-            htmlFor="price"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+          <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Price ($) *
           </label>
           <input
@@ -161,23 +129,15 @@ export default function ProductForm({
             min="0"
             step="0.01"
             value={formData.price}
-            onChange={(e) =>
-              handleInputChange("price", parseFloat(e.target.value) || 0)
-            }
+            onChange={(e) => handleInputChange("price", parseFloat(e.target.value) || 0)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             placeholder="0.00"
             disabled={isSubmitting}
           />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Category *
-          </label>
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category *</label>
           <Select
             options={categories}
             value={formData.category}
@@ -189,14 +149,8 @@ export default function ProductForm({
       </div>
 
       {/* Condition */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Condition *
-        </label>
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Condition *</label>
         <Select
           options={conditions}
           value={formData.condition}
@@ -207,22 +161,14 @@ export default function ProductForm({
       </motion.div>
 
       {/* Tags */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Tags
-        </label>
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</label>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
-            onKeyPress={(e) =>
-              e.key === "Enter" && (e.preventDefault(), handleAddTag())
-            }
+            onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             placeholder="Add tags..."
             disabled={isSubmitting}
@@ -262,39 +208,24 @@ export default function ProductForm({
       </motion.div>
 
       {/* Image Upload */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.7 }}
-      >
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Imágenes de producto
-        </label>
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }}>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Imágenes de producto</label>
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
           <input
             type="file"
             multiple
             accept="image/*"
-            onChange={(e) =>
-              handleInputChange("images", Array.from(e.target.files || []))
-            }
+            onChange={(e) => handleInputChange("images", Array.from(e.target.files || []))}
             className="hidden"
             id="image-upload"
             disabled={isSubmitting}
           />
-          <label
-            htmlFor="image-upload"
-            className="cursor-pointer text-primary hover:text-primary-dark"
-          >
+          <label htmlFor="image-upload" className="cursor-pointer text-primary hover:text-primary-dark">
             Haga clic para seleccionar imágenes o arrastre y suelte aquí
           </label>
-          <p className="text-xs text-gray-500 mt-1">
-            PNG, JPG, GIF hasta 10MB cada una
-          </p>
+          <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF hasta 10MB cada una</p>
           {formData.images.length > 0 && (
-            <p className="text-sm text-primary mt-2">
-              {formData.images.length} imagen(es) seleccionadas
-            </p>
+            <p className="text-sm text-primary mt-2">{formData.images.length} imagen(es) seleccionadas</p>
           )}
         </div>
       </motion.div>

@@ -1,6 +1,8 @@
 "use client";
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { Title } from "../text/title";
+import { X } from "lucide-react";
 
 type Props = {
   isOpen: boolean;
@@ -17,13 +19,7 @@ const sizeClasses = {
   xl: "max-w-4xl",
 };
 
-export default function Modal({
-  isOpen,
-  onClose,
-  children,
-  title,
-  size = "md",
-}: Props) {
+export default function Modal({ isOpen, onClose, children, title, size = "md" }: Props) {
   // Close modal on escape key and handle body scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -79,37 +75,21 @@ export default function Modal({
             onClick={(e) => e.stopPropagation()}
             className={`
               relative w-full ${sizeClasses[size]} max-h-[90vh] 
-              bg-white rounded-lg shadow-2xl overflow-hidden z-10
+              bg-white dark:bg-stone-900 rounded-lg shadow-2xl overflow-hidden z-10
             `}
           >
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  aria-label="Close modal"
-                >
-                  <svg
-                    className="w-5 h-5 text-gray-500"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                <Title variant="h3" className="font-semibold">
+                  {title}
+                </Title>
+                <X onClick={onClose} className="cursor-pointer" />
               </div>
             )}
 
             {/* Body */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
-              {children}
-            </div>
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-8rem)] scrollbar-hide">{children}</div>
           </motion.div>
         </motion.div>
       )}

@@ -1,14 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+import { Text } from "@/ui/text/text";
+import { Title } from "@/ui/text/title";
+import { validateEmail } from "@/utils/regexValidations";
 import Image from "next/image";
 import Input from "@/ui/inputs/input";
 import MainButton from "@/ui/buttons/mainButton";
-import Link from "next/link";
 import useLogin from "./_hooks/useLogin";
-import { validateEmail } from "@/utils/regexValidations";
-import { Title } from "@/ui/text/title";
-import { Text } from "@/ui/text/text";
 
 export default function LoginPage() {
   const { formData, showPassword, isLoading, togglePasswordVisibility, handleFormData, handleSubmit } = useLogin();
@@ -32,7 +31,7 @@ export default function LoginPage() {
             <Image src={"/brand/logo.webp"} alt="EKORU" width={800} height={400} className="w-auto h-full" priority />
           </div>
           <Title variant="h2" className="font-bold mb-2">
-            Bienvenido
+            Panel de administración
           </Title>
           <Text variant="p">Ingresa a tu cuenta</Text>
         </motion.div>
@@ -88,17 +87,6 @@ export default function LoginPage() {
                 variant="primary"
               />
             </div>
-            <Text variant="span" className="block text-center mt-4">
-              ¿No tienes una cuenta?{" "}
-              <Link href="/register" className="text-primary hover:underline">
-                Regístrate
-              </Link>
-            </Text>
-            <Text variant="span" className="block text-center mt-4">
-              <Link href="/feed" className="text-primary hover:underline">
-                Regresar a la página principal
-              </Link>
-            </Text>
           </div>
         </motion.div>
       </motion.div>

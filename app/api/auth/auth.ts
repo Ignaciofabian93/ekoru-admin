@@ -1,12 +1,6 @@
 import { REST_URL } from "@/config/endpoints";
 
-export async function Login({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
+export async function Login({ email, password }: { email: string; password: string }) {
   const options: RequestInit = {
     method: "POST",
     headers: {
@@ -15,7 +9,7 @@ export async function Login({
     credentials: "include",
     body: JSON.stringify({ email, password }),
   };
-  const response = await fetch(`${REST_URL}/auth`, options);
+  const response = await fetch(`${REST_URL}/authAdmin`, options);
   const data = await response.json();
   return data;
 }

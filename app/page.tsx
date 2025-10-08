@@ -1,5 +1,13 @@
+"use client";
+import useSessionStore from "@/store/session";
 import { redirect } from "next/navigation";
 
 export default function InitApp() {
-  redirect("/feed");
+  const { data } = useSessionStore();
+
+  if (!data.id) {
+    redirect("/login");
+  }
+
+  redirect("/home");
 }

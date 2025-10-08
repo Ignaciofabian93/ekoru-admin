@@ -1,98 +1,43 @@
 import { gql } from "@apollo/client";
 
-export const GET_ME = gql`
-  query Me {
-    me {
+export const GET_MY_DATA = gql`
+  query GetMyData {
+    getMyData {
       id
       email
-      sellerType
+      password
+      name
+      lastName
+      adminType
+      role
+      permissions
+      sellerId
       isActive
-      isVerified
+      isEmailVerified
+      accountLocked
+      loginAttempts
+      lastLoginAt
+      lastLoginIp
       createdAt
       updatedAt
-      address
-      phone
-      website
-      preferredContactMethod
-      socialMediaLinks
-      accountType
-      points
-      profile {
-        ... on PersonProfile {
-          id
-          sellerId
-          firstName
-          lastName
-          displayName
-          bio
-          birthday
-          profileImage
-          coverImage
-          allowExchanges
-        }
-        ... on StoreProfile {
-          id
-          sellerId
-          businessName
-          displayName
-          description
-          logo
-          coverImage
-          businessType
-          taxId
-          businessRegistration
-          allowExchanges
-          minOrderAmount
-          shippingPolicy
-          returnPolicy
-          businessHours
-        }
-        ... on ServiceProfile {
-          id
-          sellerId
-          businessName
-          displayName
-          description
-          logo
-          coverImage
-          businessType
-          taxId
-          businessRegistration
-          allowExchanges
-          minOrderAmount
-          serviceArea
-          serviceHours
-          yearsOfExperience
-          licenseNumber
-          insuranceInfo
-          certifications
-          emergencyService
-          travelRadius
-          responsiveness
-        }
-      }
-      userCategory {
+      region {
         id
-        name
-        categoryDiscountAmount
-        pointsThreshold
-        level
+        region
+        countryId
+      }
+      county {
+        id
+        county
+        cityId
       }
       country {
         id
         country
       }
-      region {
-        id
-        region
-      }
       city {
         id
         city
-      }
-      county {
-        id
-        county
+        regionId
       }
     }
   }

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { RefreshToken } from "./api/auth/auth";
 import { Loader2 } from "lucide-react";
 import { useLazyQuery } from "@apollo/client";
-import { GET_ME } from "@/graphql/session/queries";
+import { GET_MY_DATA } from "@/graphql/session/queries";
 import useSessionStore from "@/store/session";
 
 export default function SessionWrapper({
@@ -21,7 +21,7 @@ export default function SessionWrapper({
   const pathname = usePathname();
   const { handleSession } = useSessionStore();
 
-  const [GetMe, { loading: userLoading }] = useLazyQuery(GET_ME);
+  const [getMyData, { loading: userLoading }] = useLazyQuery(GET_MY_DATA);
 
   useEffect(() => {
     // If both tokens are missing, assume guest user
@@ -53,9 +53,9 @@ export default function SessionWrapper({
       // Uncomment and adjust below to fetch user data
       (async () => {
         try {
-          const { data: userData, error } = await GetMe();
+          const { data: userData, error } = await getMyData();
           if (userData) {
-            handleSession(userData.me);
+            handleSession(userData.getMyData);
             setLoading(false);
             return;
           }
@@ -68,8 +68,8 @@ export default function SessionWrapper({
           ) {
             const refreshResponse = await RefreshToken();
             if (refreshResponse?.success) {
-              const { data: refreshedData } = await GetMe();
-              handleSession(refreshedData.me);
+              const { data: refreshedData } = await getMyData();
+              handleSession(refreshedData.getMyData);
               setLoading(false);
               return;
             }

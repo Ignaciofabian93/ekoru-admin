@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Login } from "@/app/api/auth/auth";
 import { useLazyQuery } from "@apollo/client";
-import { GET_ME } from "@/graphql/session/queries";
+import { GET_MY_DATA } from "@/graphql/session/queries";
+import { sanitizeEmailInput } from "@/security/sanitizeInputs";
 import useSessionStore from "@/store/session";
 import useAlert from "@/hooks/useAlert";
-import { sanitizeEmailInput } from "@/security/sanitizeInputs";
 
 export default function useLogin() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function useLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [GetMe, { loading: userLoading }] = useLazyQuery(GET_ME);
+  const [getMyData, { loading: userLoading }] = useLazyQuery(GET_MY_DATA);
 
   const handleFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,12 +53,16 @@ export default function useLogin() {
 
     setIsLoading(true);
     const response = await Login({ email: sanitizedEmail, password }); // Don't sanitize password
+    console.log("RES:: ", response);
+
     if (response && response.token) {
-      const { data: userData } = await GetMe();
-      if (!userLoading && userData.me?.id) {
-        handleSession(userData.me);
+      const { data: userData } = await getMyData();
+      console.log("USER DATA:: ", userData);
+
+      if (!userLoading && userData.getMyData?.id) {
+        handleSession(userData.getMyData);
         notify("Inicio de sesión exitoso.");
-        router.replace("/feed");
+        router.replace("/home");
         setIsLoading(false);
         return;
       } else {

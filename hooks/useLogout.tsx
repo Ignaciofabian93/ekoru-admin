@@ -5,7 +5,7 @@ export default function useLogout() {
 
   const handleLogout = async () => {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
-    router.replace("/feed");
+    router.replace("/login");
   };
 
   return { handleLogout };

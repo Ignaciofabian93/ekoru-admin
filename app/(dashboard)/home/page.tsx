@@ -1,7 +1,9 @@
+import MainLayout from "@/ui/layout/mainLayout";
+
 export default function HomePage() {
   return (
-    <main>
+    <MainLayout>
       <h1>Home Page</h1>
-    </main>
+    </MainLayout>
   );
 }

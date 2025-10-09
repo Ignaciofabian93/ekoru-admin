@@ -20,7 +20,7 @@ export async function RefreshToken() {
     method: "POST",
     credentials: "include",
   };
-  const response = await fetch(`${REST_URL}/refresh`, options);
+  const response = await fetch(`${REST_URL}/refreshAdmin`, options);
   const data = await response.json();
   return data;
 }

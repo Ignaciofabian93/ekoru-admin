@@ -5,7 +5,6 @@ export const GET_MY_DATA = gql`
     getMyData {
       id
       email
-      password
       name
       lastName
       adminType

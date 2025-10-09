@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { Database, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { DatabaseTable } from "../_constants/data";
+import { Text } from "@/ui/text/text";
+import { Title } from "@/ui/text/title";
 
 interface TableCardProps {
   table: DatabaseTable;
@@ -79,10 +81,10 @@ export default function TableCard({ table, onClick }: TableCardProps) {
     <motion.div
       onClick={onClick}
       className={clsx(
-        "relative p-5 rounded-xl border-2",
+        "relative p-5 rounded-xl border-2 min-h-[200px]",
         "bg-white dark:bg-layout-dark-800",
         "border-layout-light-200 dark:border-layout-dark-700",
-        "hover:border-blue-300 dark:hover:border-blue-600",
+        "hover:border-lime-300 dark:hover:border-line-600",
         "cursor-pointer group",
         "transition-all duration-200",
         "shadow-sm hover:shadow-lg dark:shadow-layout-dark-900/50"
@@ -92,13 +94,14 @@ export default function TableCard({ table, onClick }: TableCardProps) {
     >
       {/* Category Badge */}
       <div className="flex items-center justify-between mb-3">
-        <span
+        <Text
+          variant="label"
           className={clsx("px-3 py-1 rounded-full text-xs font-semibold border", colors.bg, colors.text, colors.border)}
         >
           {table.category}
-        </span>
+        </Text>
         <motion.div
-          className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400"
+          className="text-gray-400 dark:text-gray-500 group-hover:text-lime-500 dark:group-hover:text-lime-400"
           animate={{ x: 0 }}
           whileHover={{ x: 4 }}
         >
@@ -108,21 +111,27 @@ export default function TableCard({ table, onClick }: TableCardProps) {
 
       {/* Icon & Title */}
       <div className="flex items-start gap-3 mb-3">
-        <div className={clsx("p-2 rounded-lg", "bg-gradient-to-br from-blue-500 to-blue-600", "text-white shadow-md")}>
+        <div className={clsx("p-2 rounded-lg", "bg-gradient-to-br from-lime-500 to-lime-600", "text-white shadow-md")}>
           <Database size={20} />
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{table.label}</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">{table.name}</p>
+          <Title variant="h5" className="font-bold mb-1">
+            {table.label}
+          </Title>
+          <Text variant="small" className={clsx("text-stone-800 dark:text-white font-medium")}>
+            {table.name}
+          </Text>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{table.description}</p>
+      <Text variant="p" className="text-stone-800 dark:text-white line-clamp-2">
+        {table.description}
+      </Text>
 
       {/* Hover Effect Overlay */}
       <motion.div
-        className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/5 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+        className="absolute inset-0 rounded-xl bg-gradient-to-br from-lime-500/5 to-lime-600/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
         initial={false}
       />
     </motion.div>

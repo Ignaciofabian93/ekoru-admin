@@ -9,7 +9,7 @@ export interface DatabaseTable {
 export const databaseTables: DatabaseTable[] = [
   // Admin & Authentication
   {
-    name: "Admin",
+    name: "Admins",
     label: "Administradores",
     description: "Gestión de usuarios administradores del sistema",
     category: "Administración",
@@ -29,25 +29,25 @@ export const databaseTables: DatabaseTable[] = [
 
   // Location
   {
-    name: "Country",
+    name: "Countries",
     label: "Países",
     description: "Catálogo de países",
     category: "Ubicación",
   },
   {
-    name: "Region",
+    name: "Regions",
     label: "Regiones",
     description: "Regiones por país",
     category: "Ubicación",
   },
   {
-    name: "City",
+    name: "Cities",
     label: "Ciudades",
     description: "Ciudades por región",
     category: "Ubicación",
   },
   {
-    name: "County",
+    name: "Counties",
     label: "Comunas",
     description: "Comunas por ciudad",
     category: "Ubicación",

@@ -1,34 +1,81 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import clsx from "clsx";
-import { Search, ChevronLeft, ChevronRight, Edit, Trash2, Eye } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Edit, Trash2, Eye, Loader2, AlertCircle } from "lucide-react";
+import { useTableData } from "@/hooks/useTableData";
 
 interface DataTableProps {
   tableName: string;
 }
 
-// Placeholder component - will be replaced with actual data fetching
 export default function DataTable({ tableName }: DataTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Placeholder data - replace with actual GraphQL query
-  const placeholderData = Array.from({ length: 25 }, (_, i) => ({
-    id: i + 1,
-    column1: `Dato ${i + 1}`,
-    column2: `Valor ${i + 1}`,
-    column3: `Info ${i + 1}`,
-  }));
+  const { data, loading, error, refetch } = useTableData({
+    tableName,
+    limit: itemsPerPage, // Fetch more data, we'll handle pagination client-side
+    offset: itemsPerPage * (currentPage - 1),
+  });
 
-  const filteredData = placeholderData.filter((item) =>
-    Object.values(item).some((val) => val.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+  // Reset page when table changes
+  useEffect(() => {
+    setCurrentPage(1);
+    setSearchTerm("");
+  }, [tableName]);
+
+  // Filter data based on search term
+  const filteredData = data.filter((item) =>
+    Object.values(item).some((val) => val?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+  // Get column names from first data item
+  const columns = paginatedData.length > 0 ? Object.keys(paginatedData[0]).filter((key) => key !== "__typename") : [];
+
+  // Format cell value for display
+  const formatCellValue = (value: unknown): string => {
+    if (value === null || value === undefined) return "-";
+    if (typeof value === "object") return JSON.stringify(value);
+    if (typeof value === "boolean") return value ? "✓" : "✗";
+    return String(value);
+  };
+
+  // Loading state
+  if (loading && data.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 size={48} className="animate-spin text-blue-500 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">Cargando datos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Error al cargar datos</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{error.message}</p>
+          <button
+            onClick={() => refetch()}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col gap-4">
@@ -63,18 +110,14 @@ export default function DataTable({ tableName }: DataTableProps) {
         <table className="w-full">
           <thead className="bg-gray-50 dark:bg-layout-dark-700 sticky top-0">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                ID
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                Columna 1
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                Columna 2
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                Columna 3
-              </th>
+              {columns.map((column) => (
+                <th
+                  key={column}
+                  className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                >
+                  {column}
+                </th>
+              ))}
               <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Acciones
               </th>
@@ -83,16 +126,23 @@ export default function DataTable({ tableName }: DataTableProps) {
           <tbody className="bg-white dark:bg-layout-dark-800 divide-y divide-layout-light-200 dark:divide-layout-dark-700">
             {paginatedData.map((item, index) => (
               <motion.tr
-                key={item.id}
+                key={String(item.id) || index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.02 }}
                 className="hover:bg-gray-50 dark:hover:bg-layout-dark-700 transition-colors duration-150"
               >
-                <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-mono">{item.id}</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.column1}</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.column2}</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.column3}</td>
+                {columns.map((column) => (
+                  <td
+                    key={column}
+                    className={clsx(
+                      "px-4 py-3 text-sm",
+                      column === "id" ? "text-gray-900 dark:text-white font-mono" : "text-gray-700 dark:text-gray-300"
+                    )}
+                  >
+                    {formatCellValue(item[column])}
+                  </td>
+                ))}
                 <td className="px-4 py-3 text-sm text-right">
                   <div className="flex items-center justify-end gap-2">
                     <motion.button
@@ -177,11 +227,12 @@ export default function DataTable({ tableName }: DataTableProps) {
         </div>
       )}
 
-      {/* Info Note */}
-      <div className="text-xs text-gray-500 dark:text-gray-400 text-center p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-        ℹ️ Datos de ejemplo. Conectar con GraphQL para mostrar datos reales de{" "}
-        <span className="font-mono font-semibold">{tableName}</span>
-      </div>
+      {/* Empty State - No Data */}
+      {data.length === 0 && !loading && (
+        <div className="text-xs text-gray-500 dark:text-gray-400 text-center p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          ℹ️ No hay datos disponibles para <span className="font-mono font-semibold">{tableName}</span>
+        </div>
+      )}
     </div>
   );
 }

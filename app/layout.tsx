@@ -12,7 +12,7 @@ const cabin = Cabin({
 
 export const metadata: Metadata = {
   title: "EKORU",
-  description: "Venta sustentable",
+  description: "Panel de administración",
   icons: {
     icon: "/favicon.ico",
   },

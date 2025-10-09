@@ -1,90 +1,52 @@
 import { gql } from "@apollo/client";
 
-export const GET_BLOGS = gql`
-  query Blogs {
-    blogs(take: 10, skip: 0, orderBy: { field: "title", direction: asc }) {
+export const GET_BLOG_POSTS = gql`
+  query GetBlogPosts($offset: Int, $limit: Int, $isPublished: Boolean, $category: BlogCategory) {
+    getBlogPosts(offset: $offset, limit: $limit, isPublished: $isPublished, category: $category) {
       id
       title
       content
-      excerpt
-      slug
-      category
-      status
-      featuredImage
-      images
+      authorId
       tags
-      metaTitle
-      metaDescription
-      readingTime
-      views
+      isPublished
       publishedAt
       createdAt
       updatedAt
-      likesCount
-      commentsCount
-      likes {
-        id
-      }
-      comments {
-        id
-        comment
-        userId
-        createdAt
-        user {
-          id
-          email
-          sellerType
-          isActive
-          isVerified
-          createdAt
-          updatedAt
-          profile {
-            ... on ServiceProfile {
-              id
-              sellerId
-              businessName
-              displayName
-              logo
-            }
-            ... on StoreProfile {
-              id
-              sellerId
-              businessName
-              displayName
-              logo
-            }
-            ... on PersonProfile {
-              id
-              sellerId
-              firstName
-              lastName
-              displayName
-              profileImage
-            }
-          }
-        }
-      }
-      admin {
-        id
-        email
-        name
-        lastName
-      }
+      category
     }
   }
 `;
 
-export const GET_BLOG_CATEGORIES = gql`
-  query BlogCategories {
-    blogCategories {
+export const GET_BLOG_POST = gql`
+  query GetBlogPost($id: ID!) {
+    getBlogPost(id: $id) {
       id
-      name
-      icon
-      description
-      blogs {
-        id
-        title
-      }
+      title
+      content
+      authorId
+      tags
+      isPublished
+      publishedAt
+      createdAt
+      updatedAt
+      category
+    }
+  }
+`;
+
+export const GET_BLOG_POSTS_BY_AUTHOR = gql`
+  query GetBlogPostsByAuthor($authorId: ID!, $offset: Int, $limit: Int) {
+    getBlogPostsByAuthor(authorId: $authorId, offset: $offset, limit: $limit) {
+      id
+      title
+      content
+      authorId
+      tags
+      isPublished
+      publishedAt
+      createdAt
+      updatedAt
+      category
     }
   }
 `;

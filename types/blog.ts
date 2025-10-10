@@ -17,39 +17,22 @@ export interface BlogAuthor {
   updatedAt: Date;
 }
 
-export interface BlogTag {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  color?: string;
-  postsCount: number;
-  createdAt: Date;
-}
-
-export interface BlogPost {
-  id: string;
+export type BlogPost = {
+  id: number;
   title: string;
-  slug: string;
-  excerpt: string;
   content: string;
-  featuredImage?: string;
-  author: BlogAuthor;
-  category: BlogCategory;
-  tags: BlogTag[];
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  readingTime: number; // in minutes
-  views: number;
-  likes: number;
-  publishedAt?: Date;
+  isPublished: boolean;
+  publishedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
+  category: BlogCategory;
+  author: {
+    id: string;
+    name: string;
+    lastName: string;
+    email: string;
   };
-}
+};
 
 export interface BlogCategoryInfo {
   category: BlogCategory;

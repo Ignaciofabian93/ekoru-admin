@@ -5,14 +5,12 @@ import { getCategoryLabel } from "@/utils/blogTranslations";
 import Input from "@/ui/inputs/input";
 import Textarea from "@/ui/inputs/textarea";
 import Select from "@/ui/inputs/select";
-import { X, Plus } from "lucide-react";
 import clsx from "clsx";
 
 interface BlogFormData {
   title: string;
   content: string;
   category: BlogCategory;
-  tags: string[];
   isPublished: boolean;
 }
 
@@ -40,17 +38,14 @@ export function BlogForm({
     title: string;
     content: string;
     category: BlogCategory | "";
-    tags: string[];
     isPublished: boolean;
   }>({
     title: initialData?.title || "",
     content: initialData?.content || "",
     category: initialData?.category || ("" as const),
-    tags: initialData?.tags || [],
     isPublished: initialData?.isPublished || false,
   });
 
-  const [tagInput, setTagInput] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleInputChange = (field: string, value: string | boolean | BlogCategory) => {
@@ -62,28 +57,6 @@ export function BlogForm({
         delete newErrors[field];
         return newErrors;
       });
-    }
-  };
-
-  const addTag = () => {
-    const trimmedTag = tagInput.trim();
-    if (trimmedTag && !formData.tags.includes(trimmedTag)) {
-      setFormData((prev) => ({ ...prev, tags: [...prev.tags, trimmedTag] }));
-      setTagInput("");
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    }));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTag();
     }
   };
 
@@ -151,50 +124,6 @@ export function BlogForm({
           disabled={isLoading}
         />
         {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category}</p>}
-      </div>
-
-      {/* Tags */}
-      <div>
-        <div className="flex gap-2 mb-2 items-end">
-          <Input
-            label="Etiquetas"
-            type="text"
-            value={tagInput}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Agregar etiqueta..."
-            className="flex-1"
-          />
-          <button
-            type="button"
-            onClick={addTag}
-            disabled={isLoading || !tagInput.trim()}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white rounded-lg transition-colors flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Agregar
-          </button>
-        </div>
-        {formData.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {formData.tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
-              >
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => removeTag(tag)}
-                  disabled={isLoading}
-                  className="hover:text-red-500 transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Content */}

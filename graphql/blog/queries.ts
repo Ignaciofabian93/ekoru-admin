@@ -6,13 +6,17 @@ export const GET_BLOG_POSTS = gql`
       id
       title
       content
-      authorId
-      tags
       isPublished
       publishedAt
       createdAt
       updatedAt
       category
+      author {
+        id
+        name
+        lastName
+        email
+      }
     }
   }
 `;
@@ -23,13 +27,17 @@ export const GET_BLOG_POST = gql`
       id
       title
       content
-      authorId
-      tags
       isPublished
       publishedAt
       createdAt
       updatedAt
       category
+      author {
+        id
+        name
+        lastName
+        email
+      }
     }
   }
 `;
@@ -40,13 +48,17 @@ export const GET_BLOG_POSTS_BY_AUTHOR = gql`
       id
       title
       content
-      authorId
-      tags
       isPublished
       publishedAt
       createdAt
       updatedAt
       category
+      author {
+        id
+        name
+        lastName
+        email
+      }
     }
   }
 `;

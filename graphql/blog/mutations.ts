@@ -7,7 +7,6 @@ export const CREATE_BLOG_POST = gql`
       title
       content
       authorId
-      tags
       isPublished
       publishedAt
       createdAt
@@ -24,7 +23,6 @@ export const UPDATE_BLOG_POST = gql`
       title
       content
       authorId
-      tags
       isPublished
       publishedAt
       createdAt
@@ -47,7 +45,6 @@ export const PUBLISH_BLOG_POST = gql`
       title
       content
       authorId
-      tags
       isPublished
       publishedAt
       createdAt
@@ -64,7 +61,6 @@ export const UNPUBLISH_BLOG_POST = gql`
       title
       content
       authorId
-      tags
       isPublished
       publishedAt
       createdAt

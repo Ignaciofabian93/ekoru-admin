@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import MainLayout from "@/ui/layout/mainLayout";
-import { BlogCard } from "@/ui/cards/blog/blogCard";
 import { BlogForm } from "@/ui/forms/blog/blogForm";
 import Modal from "@/ui/modals/modal";
 import { BlogCategory } from "@/types/enums";
@@ -14,22 +13,12 @@ import {
   PUBLISH_BLOG_POST,
   UNPUBLISH_BLOG_POST,
 } from "@/graphql/blog/mutations";
-import { Search, Plus, Filter, FileText, CheckCircle, XCircle } from "lucide-react";
-import clsx from "clsx";
 import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  category: BlogCategory;
-  tags: string[];
-  isPublished: boolean;
-  publishedAt?: string;
-  createdAt: string;
-  authorId: string;
-}
+import StatsSection from "./_ui/stats";
+import { BlogPost } from "@/types/blog";
+import ControlsSection from "./_ui/controls";
+import BlogsGridSection from "./_ui/blogsGrid";
 
 type FilterType = "all" | "published" | "draft";
 
@@ -54,8 +43,7 @@ export default function BlogPage() {
   const filteredPosts = posts.filter((post) => {
     const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      post.content.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesFilter =
       filterType === "all" ||
@@ -65,18 +53,10 @@ export default function BlogPage() {
     return matchesSearch && matchesFilter;
   });
 
-  // Stats
-  const stats = {
-    total: posts.length,
-    published: posts.filter((p) => p.isPublished).length,
-    draft: posts.filter((p) => !p.isPublished).length,
-  };
-
   const handleCreate = async (formData: {
     title: string;
     content: string;
     category: BlogCategory;
-    tags: string[];
     isPublished: boolean;
   }) => {
     try {
@@ -88,7 +68,6 @@ export default function BlogPage() {
             title: formData.title,
             content: formData.content,
             category: formData.category,
-            tags: formData.tags,
             isPublished: formData.isPublished,
           },
         },
@@ -103,7 +82,7 @@ export default function BlogPage() {
     }
   };
 
-  const handleEdit = (id: string) => {
+  const handleEdit = (id: number) => {
     const post = posts.find((p) => p.id === id);
     if (post) {
       setEditingPost(post);
@@ -115,7 +94,6 @@ export default function BlogPage() {
     title: string;
     content: string;
     category: BlogCategory;
-    tags: string[];
     isPublished: boolean;
   }) => {
     if (!editingPost) return;
@@ -128,7 +106,6 @@ export default function BlogPage() {
             title: formData.title,
             content: formData.content,
             category: formData.category,
-            tags: formData.tags,
             isPublished: formData.isPublished,
           },
         },
@@ -141,7 +118,7 @@ export default function BlogPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (confirm("¿Estás seguro de que quieres eliminar este post?")) {
       try {
         await deleteBlogPost({ variables: { id } });
@@ -152,7 +129,7 @@ export default function BlogPage() {
     }
   };
 
-  const handleTogglePublish = async (id: string, currentState: boolean) => {
+  const handleTogglePublish = async (id: number, currentState: boolean) => {
     try {
       if (currentState) {
         await unpublishBlogPost({ variables: { id } });
@@ -179,152 +156,29 @@ export default function BlogPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <Text variant="label" className="mb-1">
-                  Total
-                </Text>
-                <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
-              </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <FileText className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <Text variant="label" className="mb-1">
-                  Publicados
-                </Text>
-                <p className="text-3xl font-bold text-green-600">{stats.published}</p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <CheckCircle className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <Text variant="label" className="mb-1">
-                  Borrador
-                </Text>
-                <p className="text-3xl font-bold text-gray-600">{stats.draft}</p>
-              </div>
-              <div className="p-3 bg-gray-100 rounded-lg">
-                <XCircle className="w-6 h-6 text-gray-600" />
-              </div>
-            </div>
-          </div>
-        </div>
+        <StatsSection posts={posts} />
 
         {/* Controls */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8 border border-gray-100">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Busca posts por título, contenido o etiquetas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              />
-            </div>
-
-            {/* Filter Buttons */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setFilterType("all")}
-                className={clsx(
-                  "px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2",
-                  filterType === "all" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                )}
-              >
-                <Filter className="w-4 h-4" />
-                Todos
-              </button>
-              <button
-                onClick={() => setFilterType("published")}
-                className={clsx(
-                  "px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2",
-                  filterType === "published" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                )}
-              >
-                <CheckCircle className="w-4 h-4" />
-                Publicados
-              </button>
-              <button
-                onClick={() => setFilterType("draft")}
-                className={clsx(
-                  "px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2",
-                  filterType === "draft" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                )}
-              >
-                <XCircle className="w-4 h-4" />
-                Borrador
-              </button>
-            </div>
-
-            {/* Create Button */}
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap"
-            >
-              <Plus className="w-5 h-5" />
-              Nuevo Post
-            </button>
-          </div>
-        </div>
+        <ControlsSection
+          searchQuery={searchQuery}
+          setSearchQuery={(e) => setSearchQuery(e.target.value)}
+          filterType={filterType}
+          setFilterType={setFilterType}
+          setIsCreateModalOpen={setIsCreateModalOpen}
+        />
 
         {/* Blog Posts Grid */}
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-            <p className="mt-4 text-gray-600">Cargando posts...</p>
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-            <p className="text-red-600">Error al cargar los posts. Por favor intenta nuevamente.</p>
-          </div>
-        ) : filteredPosts.length === 0 ? (
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-12 text-center">
-            <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No se encontraron posts</h3>
-            <p className="text-gray-600 mb-6">
-              {searchQuery || filterType !== "all"
-                ? "Intenta ajustar tu búsqueda o filtros"
-                : "Comienza creando tu primer post"}
-            </p>
-            {!searchQuery && filterType === "all" && (
-              <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
-              >
-                <Plus className="w-5 h-5" />
-                Crear tu Primer Post
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
-              <BlogCard
-                key={post.id}
-                {...post}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onTogglePublish={handleTogglePublish}
-              />
-            ))}
-          </div>
-        )}
+        <BlogsGridSection
+          filterType={filterType}
+          filteredPosts={filteredPosts}
+          loading={loading}
+          error={error}
+          searchQuery={searchQuery}
+          setIsCreateModalOpen={setIsCreateModalOpen}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+          handleTogglePublish={handleTogglePublish}
+        />
 
         {/* Create Modal */}
         <Modal
@@ -357,7 +211,6 @@ export default function BlogPage() {
                 title: editingPost.title,
                 content: editingPost.content,
                 category: editingPost.category,
-                tags: editingPost.tags,
                 isPublished: editingPost.isPublished,
               }}
               onSubmit={handleUpdate}

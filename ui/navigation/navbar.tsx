@@ -2,11 +2,13 @@
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import {
+  Banknote,
   Database,
   Home,
   LogOut,
   Notebook,
   PackageSearch,
+  Recycle,
   UserRoundPen,
   UserRoundSearch,
   UsersRound,
@@ -15,21 +17,66 @@ import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import useLogout from "@/hooks/useLogout";
+import useAdminType from "@/hooks/useAdminType";
+
+const nameMap = {
+  Home: "Inicio",
+  Users: "Usuarios",
+  Products: "Productos",
+  Blogs: "Blog",
+  Community: "Comunidad",
+  Transactions: "Transacciones",
+  Impact: "Impacto Ambiental",
+  Database: "Base de datos",
+  Profile: "Perfil",
+};
 
 const navigation = [
-  { name: "Inicio", href: "/home", icon: Home },
-  { name: "Usuarios", href: "/users", icon: UserRoundSearch },
-  { name: "Productos", href: "/products", icon: PackageSearch },
-  { name: "Blog", href: "/blogs", icon: Notebook },
-  { name: "Comunidad", href: "/community", icon: UsersRound },
-  { name: "Base de datos", href: "/database", icon: Database },
-  { name: "Perfil", href: "/profile", icon: UserRoundPen },
+  { name: nameMap.Home, href: "/home", icon: Home },
+  { name: nameMap.Users, href: "/users", icon: UserRoundSearch },
+  { name: nameMap.Products, href: "/products", icon: PackageSearch },
+  { name: nameMap.Blogs, href: "/blogs", icon: Notebook },
+  { name: nameMap.Community, href: "/community", icon: UsersRound },
+  { name: nameMap.Transactions, href: "/transactions", icon: Banknote },
+  { name: nameMap.Impact, href: "/impact", icon: Recycle },
+  { name: nameMap.Database, href: "/database", icon: Database },
+  { name: nameMap.Profile, href: "/profile", icon: UserRoundPen },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const { handleLogout } = useLogout();
+  const { isPlatformAdmin } = useAdminType();
   const logo = "/brand/icon.webp";
+
+  const Tooltip = ({ name }: { name: string }) => {
+    return (
+      <div
+        className={clsx(
+          "absolute left-full ml-2 top-1/2 -translate-y-1/2",
+          "px-3 py-2 rounded-lg",
+          "bg-amber-100 dark:bg-gray-100",
+          "text-gray-800 dark:text-gray-900",
+          "text-sm font-medium whitespace-nowrap",
+          "opacity-0 group-hover:opacity-100",
+          "pointer-events-none",
+          "transition-all duration-200",
+          "shadow-lg",
+          "z-50"
+        )}
+      >
+        {name}
+        {/* Tooltip Arrow */}
+        <div
+          className={clsx(
+            "absolute right-full top-1/2 -translate-y-1/2",
+            "border-4 border-transparent",
+            "border-r-amber-100 dark:border-r-gray-100"
+          )}
+        />
+      </div>
+    );
+  };
 
   return (
     <header
@@ -53,55 +100,38 @@ export default function Navbar() {
 
         {/* Navigation Items */}
         <div className="flex-1 flex flex-col gap-2 px-3">
-          {navigation.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
+          {navigation
+            .filter((item) => {
+              // Hide Database item for non-platform admins
+              if (item.name === nameMap.Database && !isPlatformAdmin) {
+                return false;
+              }
+              return true;
+            })
+            .map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
 
-            return (
-              <Link key={item.name} href={item.href} className="relative group">
-                <motion.div
-                  className={clsx(
-                    "relative flex items-center justify-center px-2 py-3 rounded-lg",
-                    "transition-all duration-200",
-                    "cursor-pointer",
-                    isActive
-                      ? "bg-gradient-to-r from-neutral-50 to-neutral-300 dark:from-button-primary-500 dark:to-button-primary-700 text-primary dark:text-white shadow-md"
-                      : "bg-transparent text-white hover:bg-gray-100 dark:hover:bg-button-primary-700 hover:text-primary dark:hover:text-white"
-                  )}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Icon size={20} />
-                </motion.div>
-
-                {/* Tooltip */}
-                <div
-                  className={clsx(
-                    "absolute left-full ml-2 top-1/2 -translate-y-1/2",
-                    "px-3 py-2 rounded-lg",
-                    "bg-gray-900 dark:bg-gray-100",
-                    "text-white dark:text-gray-900",
-                    "text-sm font-medium whitespace-nowrap",
-                    "opacity-0 group-hover:opacity-100",
-                    "pointer-events-none",
-                    "transition-all duration-200",
-                    "shadow-lg",
-                    "z-50"
-                  )}
-                >
-                  {item.name}
-                  {/* Tooltip Arrow */}
-                  <div
+              return (
+                <Link key={item.name} href={item.href} className="relative group">
+                  <motion.div
                     className={clsx(
-                      "absolute right-full top-1/2 -translate-y-1/2",
-                      "border-4 border-transparent",
-                      "border-r-gray-900 dark:border-r-gray-100"
+                      "relative flex items-center justify-center px-2 py-3 rounded-lg",
+                      "transition-all duration-200",
+                      "cursor-pointer",
+                      isActive
+                        ? "bg-gradient-to-r from-neutral-50 to-neutral-300 dark:from-button-primary-500 dark:to-button-primary-700 text-primary dark:text-white shadow-md"
+                        : "bg-transparent text-white hover:bg-gray-100 dark:hover:bg-button-primary-700 hover:text-primary dark:hover:text-white"
                     )}
-                  />
-                </div>
-              </Link>
-            );
-          })}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Icon size={20} />
+                  </motion.div>
+                  <Tooltip name={item.name} />
+                </Link>
+              );
+            })}
         </div>
 
         {/* Logout Button */}
@@ -120,32 +150,7 @@ export default function Navbar() {
             >
               <LogOut size={20} />
             </motion.div>
-
-            {/* Tooltip */}
-            <div
-              className={clsx(
-                "absolute left-full ml-2 top-1/2 -translate-y-1/2",
-                "px-3 py-2 rounded-lg",
-                "bg-gray-900 dark:bg-gray-100",
-                "text-white dark:text-gray-900",
-                "text-sm font-medium whitespace-nowrap",
-                "opacity-0 group-hover:opacity-100",
-                "pointer-events-none",
-                "transition-all duration-200",
-                "shadow-lg",
-                "z-50"
-              )}
-            >
-              Cerrar sesión
-              {/* Tooltip Arrow */}
-              <div
-                className={clsx(
-                  "absolute right-full top-1/2 -translate-y-1/2",
-                  "border-4 border-transparent",
-                  "border-r-gray-900 dark:border-r-gray-100"
-                )}
-              />
-            </div>
+            <Tooltip name="Cerrar sesión" />
           </button>
         </div>
       </nav>

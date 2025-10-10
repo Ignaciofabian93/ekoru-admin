@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Download, Plus, RefreshCw, Database } from "lucide-react";
 import { DatabaseTable } from "../_constants/data";
@@ -6,6 +7,8 @@ import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
 import clsx from "clsx";
 import DataTable from "./DataTable";
+import ExportImportModal from "./ExportImportModal";
+import { useTableData } from "@/hooks/useTableData";
 
 interface TableDetailModalProps {
   table: DatabaseTable | null;
@@ -14,7 +17,38 @@ interface TableDetailModalProps {
 }
 
 export default function TableDetailModal({ table, isOpen, onClose }: TableDetailModalProps) {
+  const [showExportImportModal, setShowExportImportModal] = useState(false);
+
+  // Fetch all data for export (without pagination)
+  const { data, loading, refetch } = useTableData({
+    tableName: table?.name || "",
+    limit: 10000, // Get all data for export
+    offset: 0,
+  });
+
   if (!table) return null;
+
+  // Get column names from data
+  const columns = data.length > 0 ? Object.keys(data[0]).filter((key) => !key.startsWith("__")) : [];
+
+  const handleImportComplete = async (importedData: Record<string, unknown>[]) => {
+    // TODO: Call your backend bulk import mutation here
+    console.log("Importing data:", importedData);
+
+    // Example GraphQL mutation call:
+    // await bulkImportMutation({
+    //   variables: {
+    //     tableName: table.name,
+    //     data: importedData
+    //   }
+    // });
+
+    // Refetch data after import
+    await refetch();
+
+    // Close the export/import modal
+    setShowExportImportModal(false);
+  };
 
   return (
     <AnimatePresence>
@@ -79,6 +113,7 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
                   </motion.button>
 
                   <motion.button
+                    onClick={() => refetch()}
                     className={clsx(
                       "p-2 rounded-lg",
                       "bg-blue-50 dark:bg-blue-900/20",
@@ -89,11 +124,13 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     title="Refrescar datos"
+                    disabled={loading}
                   >
-                    <RefreshCw size={20} />
+                    <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
                   </motion.button>
 
                   <motion.button
+                    onClick={() => setShowExportImportModal(true)}
                     className={clsx(
                       "p-2 rounded-lg",
                       "bg-purple-50 dark:bg-purple-900/20",
@@ -103,7 +140,7 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
                     )}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    title="Exportar datos"
+                    title="Exportar / Importar datos"
                   >
                     <Download size={20} />
                   </motion.button>
@@ -131,6 +168,17 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
               </div>
             </motion.div>
           </div>
+
+          {/* Export/Import Modal */}
+          <ExportImportModal
+            isOpen={showExportImportModal}
+            onClose={() => setShowExportImportModal(false)}
+            tableName={table.name}
+            tableLabel={table.label}
+            data={data}
+            columns={columns}
+            onImportComplete={handleImportComplete}
+          />
         </>
       )}
     </AnimatePresence>

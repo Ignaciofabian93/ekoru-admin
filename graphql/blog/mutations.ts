@@ -6,12 +6,17 @@ export const CREATE_BLOG_POST = gql`
       id
       title
       content
-      authorId
       isPublished
       publishedAt
       createdAt
       updatedAt
       category
+      author {
+        id
+        name
+        lastName
+        email
+      }
     }
   }
 `;
@@ -22,12 +27,17 @@ export const UPDATE_BLOG_POST = gql`
       id
       title
       content
-      authorId
       isPublished
       publishedAt
       createdAt
       updatedAt
       category
+      author {
+        id
+        name
+        lastName
+        email
+      }
     }
   }
 `;
@@ -44,12 +54,17 @@ export const PUBLISH_BLOG_POST = gql`
       id
       title
       content
-      authorId
       isPublished
       publishedAt
       createdAt
       updatedAt
       category
+      author {
+        id
+        name
+        lastName
+        email
+      }
     }
   }
 `;
@@ -60,12 +75,17 @@ export const UNPUBLISH_BLOG_POST = gql`
       id
       title
       content
-      authorId
       isPublished
       publishedAt
       createdAt
       updatedAt
       category
+      author {
+        id
+        name
+        lastName
+        email
+      }
     }
   }
 `;

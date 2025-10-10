@@ -38,8 +38,14 @@ export default function TextArea({
             minLength={minLength}
             maxLength={maxLength}
             className={clsx(
-              "w-full pl-3 pr-3 py-3 border border-gray-300 rounded-lg outline-0 focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-all duration-200 bg-gray-50 focus:bg-white",
+              "border border-gray-300",
+              "rounded-lg outline-0",
+              "transition-all duration-200",
+              "bg-input-light-100 focus:bg-white",
+              "focus:ring-1 focus:ring-primary focus:border-primary",
+              "dark:bg-input-dark-800 dark:focus:bg-input-dark-900",
               "placeholder:text-gray-400",
+              "w-full pl-3 pr-3 py-3",
               "resize-none min-h-[200px]",
               className
             )}

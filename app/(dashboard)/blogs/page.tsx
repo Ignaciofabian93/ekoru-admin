@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import MainLayout from "@/ui/layout/mainLayout";
 import { BlogForm } from "@/ui/forms/blog/blogForm";
-import Modal from "@/ui/modals/modal";
 import { BlogCategory } from "@/types/enums";
 import { GET_BLOG_POSTS } from "@/graphql/blog/queries";
 import {
@@ -15,8 +13,10 @@ import {
 } from "@/graphql/blog/mutations";
 import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
-import StatsSection from "./_ui/stats";
 import { BlogPost } from "@/types/blog";
+import MainLayout from "@/ui/layout/mainLayout";
+import StatsSection from "./_ui/stats";
+import Modal from "@/ui/modals/modal";
 import ControlsSection from "./_ui/controls";
 import BlogsGridSection from "./_ui/blogsGrid";
 
@@ -187,12 +187,7 @@ export default function BlogPage() {
           title="Crear Nuevo Post"
           size="xl"
         >
-          <BlogForm
-            onSubmit={handleCreate}
-            onCancel={() => setIsCreateModalOpen(false)}
-            isLoading={creating}
-            submitLabel="Crear Post"
-          />
+          <BlogForm onSubmit={handleCreate} onCancel={() => setIsCreateModalOpen(false)} isLoading={creating} />
         </Modal>
 
         {/* Edit Modal */}
@@ -219,7 +214,6 @@ export default function BlogPage() {
                 setEditingPost(null);
               }}
               isLoading={updating}
-              submitLabel="Actualizar Post"
             />
           )}
         </Modal>

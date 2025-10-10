@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import MainLayout from "@/ui/layout/mainLayout";
 import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
@@ -9,8 +9,18 @@ import CategoryFilter from "./_components/CategoryFilter";
 import TableDetailModal from "./_components/TableDetailModal";
 import { DatabaseTable } from "./_constants/data";
 import { motion } from "motion/react";
+import useAdminType from "@/hooks/useAdminType";
+import { redirect } from "next/navigation";
 
 export default function DatabasePage() {
+  const { isPlatformAdmin } = useAdminType();
+
+  useEffect(() => {
+    if (!isPlatformAdmin) {
+      redirect("/home");
+    }
+  }, [isPlatformAdmin]);
+
   const [selectedCategory, setSelectedCategory] = useState<TableCategory | "all">("all");
   const [selectedTable, setSelectedTable] = useState<DatabaseTable | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

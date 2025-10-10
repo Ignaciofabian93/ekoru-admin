@@ -1,11 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const GET_ADMINS = gql`
-  query GetAdmins {
-    getAdmins(adminType: PLATFORM, isActive: true, role: SUPER_ADMIN, limit: 10, offset: 1) {
+  query GetAdmins($adminType: AdminType, $role: AdminRole, $isActive: Boolean, $limit: Int, $offset: Int) {
+    getAdmins(adminType: $adminType, isActive: $isActive, role: $role, limit: $limit, offset: $offset) {
       id
       email
-      password
       name
       lastName
       adminType

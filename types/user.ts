@@ -1,6 +1,8 @@
 import { type AccountType, type ContactMethod, type SellerType } from "./enums";
 import { City, Country, County, Region } from "./location";
 
+export type AdminType = "PLATFORM" | "BUSINESS";
+
 // Admin privilege categories for Ekoru platform
 export type AdminPrivileges = {
   // User & Seller Management
@@ -251,6 +253,7 @@ export type Admin = {
   password: string;
   name: string;
   lastName?: string;
+  adminType: AdminType;
   role: AdminRole;
   privileges: AdminPrivileges;
   isActive: boolean;

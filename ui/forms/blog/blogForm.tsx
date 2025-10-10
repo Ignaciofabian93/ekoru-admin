@@ -5,7 +5,8 @@ import { getCategoryLabel } from "@/utils/blogTranslations";
 import Input from "@/ui/inputs/input";
 import Textarea from "@/ui/inputs/textarea";
 import Select from "@/ui/inputs/select";
-import clsx from "clsx";
+import MainButton from "@/ui/buttons/mainButton";
+import { Save } from "lucide-react";
 
 interface BlogFormData {
   title: string;
@@ -19,7 +20,6 @@ interface BlogFormProps {
   onSubmit: (data: BlogFormData) => void;
   onCancel: () => void;
   isLoading?: boolean;
-  submitLabel?: string;
 }
 
 const categoryOptions = Object.values(BlogCategory).map((cat) => ({
@@ -27,13 +27,7 @@ const categoryOptions = Object.values(BlogCategory).map((cat) => ({
   label: getCategoryLabel(cat),
 }));
 
-export function BlogForm({
-  initialData,
-  onSubmit,
-  onCancel,
-  isLoading = false,
-  submitLabel = "Create Post",
-}: BlogFormProps) {
+export function BlogForm({ initialData, onSubmit, onCancel, isLoading = false }: BlogFormProps) {
   const [formData, setFormData] = useState<{
     title: string;
     content: string;
@@ -156,24 +150,16 @@ export function BlogForm({
 
       {/* Actions */}
       <div className="flex items-center gap-3 pt-4 border-t">
-        <button
+        <MainButton
           type="submit"
-          disabled={isLoading}
-          className={clsx(
-            "flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white rounded-lg transition-colors font-medium",
-            isLoading && "cursor-not-allowed opacity-50"
-          )}
-        >
-          {isLoading ? "Guardando..." : submitLabel}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={isLoading}
-          className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 text-gray-700 rounded-lg transition-colors font-medium"
-        >
-          Cancelar
-        </button>
+          text="Guardar"
+          loadingText="Guardando..."
+          onClick={handleSubmit}
+          isLoading={isLoading}
+          hasIcon
+          icon={Save}
+        />
+        <MainButton variant="outline" text="Cancelar" onClick={onCancel} disabled={isLoading} hasIcon={false} />
       </div>
     </form>
   );

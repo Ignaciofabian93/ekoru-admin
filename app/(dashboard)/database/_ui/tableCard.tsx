@@ -5,6 +5,9 @@ import clsx from "clsx";
 import { DatabaseTable } from "../_constants/data";
 import { Text } from "@/ui/text/text";
 import { Title } from "@/ui/text/title";
+import { CardWrapper } from "@/ui/cards/card";
+import { Row } from "@/ui/layout/horizontal";
+import { Column } from "@/ui/layout/vertical";
 
 interface TableCardProps {
   table: DatabaseTable;
@@ -78,62 +81,58 @@ export default function TableCard({ table, onClick }: TableCardProps) {
   const colors = categoryColors[table.category] || categoryColors.Catálogo;
 
   return (
-    <motion.div
-      onClick={onClick}
-      className={clsx(
-        "relative p-5 rounded-xl border-2 min-h-[200px]",
-        "bg-white dark:bg-layout-dark-800",
-        "border-layout-light-200 dark:border-layout-dark-700",
-        "hover:border-lime-300 dark:hover:border-line-600",
-        "cursor-pointer group",
-        "transition-all duration-200",
-        "shadow-sm hover:shadow-lg dark:shadow-layout-dark-900/50"
-      )}
-      whileHover={{ scale: 1.02, y: -4 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      {/* Category Badge */}
-      <div className="flex items-center justify-between mb-3">
-        <Text
-          variant="label"
-          className={clsx("px-3 py-1 rounded-full text-xs font-semibold border", colors.bg, colors.text, colors.border)}
-        >
-          {table.category}
-        </Text>
-        <motion.div
-          className="text-gray-400 dark:text-gray-500 group-hover:text-lime-500 dark:group-hover:text-lime-400"
-          animate={{ x: 0 }}
-          whileHover={{ x: 4 }}
-        >
-          <ChevronRight size={20} />
-        </motion.div>
-      </div>
-
-      {/* Icon & Title */}
-      <div className="flex items-start gap-3 mb-3">
-        <div className={clsx("p-2 rounded-lg", "bg-gradient-to-br from-lime-500 to-lime-600", "text-white shadow-md")}>
-          <Database size={20} />
-        </div>
-        <div className="flex-1">
-          <Title variant="h5" className="font-bold mb-1">
-            {table.label}
-          </Title>
-          <Text variant="small" className={clsx("text-stone-800 dark:text-white font-medium")}>
-            {table.name}
+    <motion.div onClick={onClick} whileHover={{ scale: 1.02, y: -4 }} whileTap={{ scale: 0.98 }}>
+      <CardWrapper className="cursor-pointer group" variant="elevated" hoverable>
+        {/* Category Badge */}
+        <Row className="justify-between mb-3">
+          <Text
+            variant="label"
+            className={clsx(
+              "px-3 py-1 rounded-full text-xs font-semibold border",
+              colors.bg,
+              colors.text,
+              colors.border
+            )}
+          >
+            {table.category}
           </Text>
-        </div>
-      </div>
+          <motion.div
+            className="text-gray-400 dark:text-gray-500 group-hover:text-lime-500 dark:group-hover:text-lime-400"
+            animate={{ x: 0 }}
+            whileHover={{ x: 4 }}
+          >
+            <ChevronRight size={20} />
+          </motion.div>
+        </Row>
 
-      {/* Description */}
-      <Text variant="p" className="text-stone-800 dark:text-white line-clamp-2">
-        {table.description}
-      </Text>
+        {/* Icon & Title */}
+        <Row className="flex items-start gap-3 mb-3">
+          <div
+            className={clsx("p-2 rounded-lg", "bg-gradient-to-br from-lime-500 to-lime-600", "text-white shadow-md")}
+          >
+            <Database size={20} />
+          </div>
+          <Column className="">
+            <Title variant="h5" className="font-bold mb-1">
+              {table.label}
+            </Title>
+            <Text variant="small" className={clsx("text-stone-800 dark:text-white font-medium")}>
+              {table.name}
+            </Text>
+          </Column>
+        </Row>
 
-      {/* Hover Effect Overlay */}
-      <motion.div
-        className="absolute inset-0 rounded-xl bg-gradient-to-br from-lime-500/5 to-lime-600/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-        initial={false}
-      />
+        {/* Description */}
+        <Text variant="p" className="text-stone-800 dark:text-white line-clamp-2">
+          {table.description}
+        </Text>
+
+        {/* Hover Effect Overlay */}
+        <motion.div
+          className="absolute inset-0 rounded-xl bg-gradient-to-br from-lime-500/5 to-lime-600/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+          initial={false}
+        />
+      </CardWrapper>
     </motion.div>
   );
 }

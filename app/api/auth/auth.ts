@@ -18,6 +18,9 @@ export async function Login({ email, password }: { email: string; password: stri
 export async function RefreshToken() {
   const options: RequestInit = {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     credentials: "include",
   };
   const response = await fetch(`${REST_URL}/refreshAdmin`, options);

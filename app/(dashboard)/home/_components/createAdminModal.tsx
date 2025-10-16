@@ -1,5 +1,5 @@
+import { AdminRole } from "@/types";
 import { useState } from "react";
-import { AdminRole } from "@/types/user";
 
 interface CreateAdminModalProps {
   isOpen: boolean;
@@ -24,7 +24,7 @@ export default function CreateAdminModal({ isOpen, onClose, onSubmit, adminType,
     email: "",
     name: "",
     lastName: "",
-    role: AdminRole.ADMIN,
+    role: "SUPER_ADMIN",
     adminType: adminType,
     phone: "",
     sellerId: sellerId,
@@ -176,12 +176,12 @@ export default function CreateAdminModal({ isOpen, onClose, onSubmit, adminType,
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value={AdminRole.SUPER_ADMIN}>Super Admin - Full Access</option>
-                <option value={AdminRole.ADMIN}>Admin - Most Features</option>
-                <option value={AdminRole.MODERATOR}>Moderator - Content Moderation</option>
-                <option value={AdminRole.SUPPORT}>Support - Customer Support</option>
-                <option value={AdminRole.ANALYST}>Analyst - Analytics Only</option>
-                <option value={AdminRole.FINANCE}>Finance - Financial Operations</option>
+                <option value={"SUPER_ADMIN"}>Super Admin - Full Access</option>
+                <option value={"ADMIN"}>Admin - Most Features</option>
+                <option value={"MODERATOR"}>Moderator - Content Moderation</option>
+                <option value={"SUPPORT"}>Support - Customer Support</option>
+                <option value={"ANALYST"}>Analyst - Analytics Only</option>
+                <option value={"FINANCE"}>Finance - Financial Operations</option>
               </select>
             </div>
 

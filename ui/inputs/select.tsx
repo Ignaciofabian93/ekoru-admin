@@ -26,8 +26,10 @@ type SelectProps = {
   isRenderingColorIcon?: boolean;
   renderOption?: (option: Option, selected: boolean) => React.ReactNode;
   icon?: LucideIcon;
+  hasIcon?: boolean;
   searchEnabled?: boolean;
   readOnly?: boolean;
+  dropdownDirection?: "up" | "down";
 };
 
 export default function Select({
@@ -43,8 +45,10 @@ export default function Select({
   renderOption,
   className,
   icon: Icon = Lock,
+  hasIcon = true,
   searchEnabled = true,
   readOnly = false,
+  dropdownDirection = "down",
 }: SelectProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -132,17 +136,19 @@ export default function Select({
           {label}
         </Text>
       )}
-      <div className="relative">
+      <div className="relative w-full">
         <motion.div initial={false} transition={{ duration: 0.2 }} className="relative">
-          <Icon
-            className={clsx(
-              "absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-200",
-              {
-                "text-primary": isFocused,
-                "text-gray-400": !isFocused,
-              }
-            )}
-          />
+          {hasIcon && (
+            <Icon
+              className={clsx(
+                "absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-200",
+                {
+                  "text-primary": isFocused,
+                  "text-gray-400": !isFocused,
+                }
+              )}
+            />
+          )}
           <button
             type="button"
             id={name}
@@ -157,10 +163,12 @@ export default function Select({
             onKeyDown={handleKeyDown}
             className={clsx(
               "bg-select-light-50 dark:bg-select-dark-800",
-              "w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200 bg-gray-50 focus:bg-white text-left",
+              "w-full pr-12 py-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200 bg-gray-50 focus:bg-white text-left",
               "placeholder:text-gray-400",
               {
                 "opacity-50 cursor-not-allowed": disabled || readOnly,
+                "pl-10": hasIcon,
+                "pl-3": !hasIcon,
               }
             )}
           >
@@ -193,7 +201,18 @@ export default function Select({
                     : undefined
                 }
                 tabIndex={-1}
-                className="absolute top-full left-0 z-50 mt-1 w-full bg-select-light-50 dark:bg-select-dark-800 border-2 border-primary rounded-xl shadow-2xl overflow-hidden"
+                className={clsx(
+                  "absolute left-0 z-[9999]",
+                  "w-full",
+                  "bg-select-light-50",
+                  "dark:bg-select-dark-800",
+                  "border-2 border-primary",
+                  "rounded-xl shadow-2xl overflow-hidden",
+                  {
+                    "bottom-full mb-1": dropdownDirection === "up",
+                    "top-full mt-1": dropdownDirection === "down",
+                  }
+                )}
               >
                 {searchEnabled && (
                   <input
@@ -211,7 +230,7 @@ export default function Select({
                     aria-label="Buscar opciones"
                   />
                 )}
-                <ul className="max-h-60 overflow-y-auto">
+                <ul className="max-h-60 overflow-y-auto w-full">
                   {filteredOptions.length > 0 ? (
                     filteredOptions.map((option, idx) => (
                       <li
@@ -227,7 +246,7 @@ export default function Select({
                         }}
                         onMouseEnter={() => setHighlightedIndex(idx)}
                         className={clsx(
-                          "px-4 py-2 cursor-pointer hover:bg-primary/10 flex items-center gap-2",
+                          "px-4 py-2 w-full cursor-pointer hover:bg-primary/10 flex items-center gap-2",
                           option.value === value && "bg-primary/10 font-semibold",
                           highlightedIndex === idx && "bg-primary/20"
                         )}

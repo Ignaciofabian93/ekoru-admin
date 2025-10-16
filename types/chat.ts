@@ -2,17 +2,18 @@ export type Match = {
   id: number;
   senderId: string;
   receiverId: string;
-  createdAt: string;
+  createdAt: Date;
   isMatched: boolean;
+  updatedAt: Date;
 };
 
 export type Chat = {
   id: number;
   senderId: string;
   receiverId: string;
-  productId?: number;
+  productId?: number | null;
   isExchange: boolean;
-  createdAt: string;
+  createdAt: Date;
 };
 
 export type Message = {
@@ -20,23 +21,5 @@ export type Message = {
   chatId: number;
   senderId: string;
   content: string;
-  createdAt: string;
-};
-
-export type Co2ImpactMessage = {
-  id: number;
-  min: number;
-  max: number;
-  message1: string;
-  message2: string;
-  message3: string;
-};
-
-export type WaterImpactMessage = {
-  id: number;
-  min: number;
-  max: number;
-  message1: string;
-  message2: string;
-  message3: string;
+  createdAt: Date;
 };

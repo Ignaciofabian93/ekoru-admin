@@ -1,7 +1,7 @@
 export type Story = {
   id: number;
+  images: string[];
   title: string;
   description: string;
-  images: string[];
-  sellerId: string; // Changed from userId to sellerId
+  sellerId: string;
 };

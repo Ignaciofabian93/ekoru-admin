@@ -35,7 +35,7 @@ export default function RegularButton({
       className={clsx(
         "w-full min-w-[100px]",
         "py-3 px-4 rounded-lg font-medium shadow-md transition-all duration-200",
-        "flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed",
+        "flex items-center justify-center space-x-2 disabled:opacity-30",
         sizeClass,
         selected
           ? "bg-gray-700/80 text-gray-50 border border-gray-700"

@@ -9,7 +9,7 @@ export interface DatabaseTable {
 export const databaseTables: DatabaseTable[] = [
   // Admin & Authentication
   {
-    name: "Admins",
+    name: "Admin",
     label: "Administradores",
     description: "Gestión de usuarios administradores del sistema",
     category: "Administración",
@@ -18,12 +18,6 @@ export const databaseTables: DatabaseTable[] = [
     name: "AdminActivityLog",
     label: "Registro de Actividad",
     description: "Historial de acciones de administradores",
-    category: "Administración",
-  },
-  {
-    name: "AdminPermission",
-    label: "Permisos de Admin",
-    description: "Permisos asignados a administradores",
     category: "Administración",
   },
 
@@ -50,6 +44,12 @@ export const databaseTables: DatabaseTable[] = [
     name: "Counties",
     label: "Comunas",
     description: "Comunas por ciudad",
+    category: "Ubicación",
+  },
+  {
+    name: "CountryConfigs",
+    label: "Configuración de País",
+    description: "Configuración específica por país",
     category: "Ubicación",
   },
 
@@ -84,6 +84,12 @@ export const databaseTables: DatabaseTable[] = [
     description: "Categorías para clasificar vendedores",
     category: "Usuarios",
   },
+  {
+    name: "SellerLevels",
+    label: "Niveles de Vendedor",
+    description: "Niveles y rangos de vendedores por puntos",
+    category: "Usuarios",
+  },
 
   // Products & Catalog
   {
@@ -102,6 +108,12 @@ export const databaseTables: DatabaseTable[] = [
     name: "ProductCategory",
     label: "Categorías de Producto",
     description: "Categorías específicas de productos",
+    category: "Catálogo",
+  },
+  {
+    name: "ProductCategoryMaterial",
+    label: "Materiales de Categoría",
+    description: "Materiales asociados a categorías de producto",
     category: "Catálogo",
   },
   {
@@ -129,11 +141,43 @@ export const databaseTables: DatabaseTable[] = [
     category: "Productos",
   },
 
+  // Store Products
+  {
+    name: "StoreCategory",
+    label: "Categorías de Tienda",
+    description: "Categorías principales de tienda",
+    category: "Tienda",
+  },
+  {
+    name: "StoreSubCategory",
+    label: "Subcategorías de Tienda",
+    description: "Subcategorías de productos de tienda",
+    category: "Tienda",
+  },
+  {
+    name: "StoreProduct",
+    label: "Productos de Tienda",
+    description: "Productos disponibles en tienda",
+    category: "Tienda",
+  },
+  {
+    name: "StoreProductMaterial",
+    label: "Materiales de Producto de Tienda",
+    description: "Materiales de productos de tienda",
+    category: "Tienda",
+  },
+
   // Services
   {
     name: "ServiceCategory",
     label: "Categorías de Servicio",
     description: "Categorías de servicios ofrecidos",
+    category: "Servicios",
+  },
+  {
+    name: "ServiceSubCategory",
+    label: "Subcategorías de Servicio",
+    description: "Subcategorías de servicios",
     category: "Servicios",
   },
   {
@@ -215,7 +259,7 @@ export const databaseTables: DatabaseTable[] = [
   {
     name: "ChileanPaymentConfig",
     label: "Configuración de Pagos",
-    description: "Configuración de proveedores de pago",
+    description: "Configuración de proveedores de pago chilenos",
     category: "Pagos",
   },
 
@@ -276,6 +320,18 @@ export const databaseTables: DatabaseTable[] = [
     description: "Comentarios en publicaciones de comunidad",
     category: "Contenido",
   },
+  {
+    name: "CommunityCategory",
+    label: "Categorías de Comunidad",
+    description: "Categorías de la comunidad",
+    category: "Contenido",
+  },
+  {
+    name: "CommunitySubCategory",
+    label: "Subcategorías de Comunidad",
+    description: "Subcategorías de la comunidad",
+    category: "Contenido",
+  },
 
   // Sustainability
   {
@@ -304,6 +360,7 @@ export const tableCategories = [
   "Usuarios",
   "Catálogo",
   "Productos",
+  "Tienda",
   "Servicios",
   "Transacciones",
   "Pagos",

@@ -1,0 +1,14 @@
+import { type Request, type Response } from "express";
+
+export type Context = {
+  req: Request;
+  res: Response;
+  token?: string;
+  adminId?: string;
+};
+
+export type ResolverFn<TParent = unknown, TArgs = Record<string, unknown>, TResult = unknown> = (
+  parent: TParent,
+  args: TArgs,
+  context: Context,
+) => Promise<TResult> | TResult;

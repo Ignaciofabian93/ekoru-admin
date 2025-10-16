@@ -1,56 +1,71 @@
-import {
-  type Badge,
-  type ProductSize,
-  type WeightUnit,
-  type ProductCondition,
-} from "./enums";
+import { type Badge, type ProductSize, type WeightUnit, type ProductCondition } from "./enums";
 
 export type Product = {
   id: number;
   name: string;
   description: string;
-  price: number; // Price in cents
+  price: number;
   hasOffer: boolean;
-  offerPrice: number;
-  stock: number;
-  sellerId: string; // Changed from userId to sellerId
+  offerPrice?: number | null;
+  sellerId: string;
   badges: Badge[];
-  barcode?: string;
   brand: string;
-  color?: string;
-  createdAt: string;
+  color?: string | null;
+  createdAt: Date;
   images: string[];
   interests: string[];
   isActive: boolean;
   isExchangeable: boolean;
   productCategoryId: number;
-  ratingCount: number;
-  ratings: number;
-  reviewsNumber: number;
-  sku?: string;
-  updatedAt: string;
-
-  // Product condition for recycled items
+  updatedAt: Date;
   condition: ProductCondition;
-  conditionDescription?: string; // Detailed condition description
-
-  // Sustainability info
-  sustainabilityScore?: number; // 1-100 score
-  materialComposition?: string; // e.g., "80% cotton, 20% polyester"
-  recycledContent?: number; // Percentage of recycled materials
+  conditionDescription?: string | null;
+  deletedAt?: Date | null;
 };
 
-export type ProductLike = {
+export type ProductVariant = {
   id: number;
-  productId: number;
-  sellerId: string; // Changed from userId to sellerId
+  name: string;
+  price: number;
+  stock: number;
+  color?: string | null;
+  size?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  storeProductId: number;
 };
 
-export type ProductComment = {
+export type ProductCategory = {
   id: number;
-  comment: string;
-  productId: number;
-  sellerId: string; // Changed from userId to sellerId
+  departmentCategoryId: number;
+  averageWeight?: number | null;
+  keywords: string[];
+  productCategoryName: string;
+  size?: ProductSize | null;
+  weightUnit?: WeightUnit | null;
+};
+
+export type ProductCategoryMaterial = {
+  id: number;
+  productCategoryId: number;
+  materialTypeId: number;
+  quantity: number;
+  unit: string;
+  isPrimary: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type DepartmentCategory = {
+  id: number;
+  departmentId: number;
+  departmentCategoryName: string;
+};
+
+export type Department = {
+  id: number;
+  departmentName: string;
+  departmentImage?: string | null;
 };
 
 export type MaterialImpactEstimate = {
@@ -60,36 +75,75 @@ export type MaterialImpactEstimate = {
   estimatedWaterSavingsLT: number;
 };
 
-export type ProductCategory = {
+export type Co2ImpactMessage = {
   id: number;
-  departmentCategoryId: number;
-  averageWeight?: number;
-  fifthMaterialTypeId?: number;
-  fifthMaterialTypeQuantity?: number;
-  firstMaterialTypeId?: number;
-  firstMaterialTypeQuantity?: number;
-  fourthMaterialTypeId?: number;
-  fourthMaterialTypeQuantity?: number;
-  keywords: string[];
-  productCategoryName: string;
-  secondMaterialTypeId?: number;
-  secondMaterialTypeQuantity?: number;
-  size?: ProductSize;
-  thirdMaterialTypeId?: number;
-  thirdMaterialTypeQuantity?: number;
-  weightUnit?: WeightUnit;
-  products: Product[];
+  min: number;
+  max: number;
+  message1: string;
+  message2: string;
+  message3: string;
 };
 
-export type DepartmentCategory = {
+export type WaterImpactMessage = {
   id: number;
-  departmentCategoryName: string;
-  departmentId: number;
-  productCategories: ProductCategory[];
+  min: number;
+  max: number;
+  message1: string;
+  message2: string;
+  message3: string;
 };
 
-export type Department = {
+export type StoreCategory = {
   id: number;
-  departmentName: string;
-  departmentCategories: DepartmentCategory[];
+  category: string;
+};
+
+export type StoreSubCategory = {
+  id: number;
+  subCategory: string;
+  storeCategoryId: number;
+};
+
+export type StoreProduct = {
+  id: number;
+  name: string;
+  description: string;
+  stock: number;
+  barcode?: string | null;
+  sku?: string | null;
+  price: number;
+  hasOffer: boolean;
+  offerPrice?: number | null;
+  sellerId: string;
+  createdAt: Date;
+  images: string[];
+  isActive: boolean;
+  updatedAt: Date;
+  badges: Badge[];
+  brand?: string | null;
+  color?: string | null;
+  ratingCount: number;
+  ratings: number;
+  reviewsNumber: number;
+  materialComposition?: string | null;
+  recycledContent?: number | null;
+  subcategoryId: number;
+  deletedAt?: Date | null;
+  sustainabilityScore?: number | null;
+  carbonFootprint?: number | null;
+};
+
+export type StoreProductMaterial = {
+  id: number;
+  storeProductId: number;
+  materialTypeId: number;
+  quantity: number;
+  unit: string;
+  isPrimary: boolean;
+  sourceMaterial?: string | null;
+  isRecycled: boolean;
+  recycledPercentage?: number | null;
+  supplierVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };

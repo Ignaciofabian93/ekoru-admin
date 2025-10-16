@@ -2,8 +2,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import clsx from "clsx";
-import { Search, ChevronLeft, ChevronRight, Edit, Trash2, Eye, Loader2, AlertCircle } from "lucide-react";
+import { Search, Edit, Trash2, Loader2, AlertCircle } from "lucide-react";
 import { useTableData } from "@/hooks/useTableData";
+import Pagination from "@/ui/pagination/pagination";
 
 interface DataTableProps {
   tableName: string;
@@ -11,13 +12,13 @@ interface DataTableProps {
 
 export default function DataTable({ tableName }: DataTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
-  const { data, loading, error, refetch } = useTableData({
+  const { data, loading, error, refetch, pageInfo } = useTableData({
     tableName,
-    limit: itemsPerPage, // Fetch more data, we'll handle pagination client-side
-    offset: itemsPerPage * (currentPage - 1),
+    page: currentPage,
+    pageSize: itemsPerPage,
   });
 
   // Reset page when table changes
@@ -26,17 +27,20 @@ export default function DataTable({ tableName }: DataTableProps) {
     setSearchTerm("");
   }, [tableName]);
 
-  // Filter data based on search term
-  const filteredData = data.filter((item) =>
-    Object.values(item).some((val) => val?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Filter data based on search term (only for client-side filtering)
+  const filteredData = searchTerm
+    ? data.filter((item) =>
+        Object.values(item).some((val) => val?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : data;
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+  // Calculate pagination info
+  const totalPages = pageInfo?.totalPages || 1;
+
+  const displayData = searchTerm ? filteredData : data;
 
   // Get column names from first data item
-  const columns = paginatedData.length > 0 ? Object.keys(paginatedData[0]).filter((key) => key !== "__typename") : [];
+  const columns = displayData.length > 0 ? Object.keys(displayData[0]).filter((key) => key !== "__typename") : [];
 
   // Format cell value for display
   const formatCellValue = (value: unknown): string => {
@@ -60,12 +64,32 @@ export default function DataTable({ tableName }: DataTableProps) {
 
   // Error state
   if (error) {
+    console.error("DataTable error:", error);
+    console.error("GraphQL errors:", error.graphQLErrors);
+    console.error("Network error:", error.networkError);
+
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-2xl">
           <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Error al cargar datos</h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{error.message}</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-2">{error.message}</p>
+          {error.graphQLErrors && error.graphQLErrors.length > 0 && (
+            <div className="text-sm text-left bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-4">
+              <p className="font-semibold mb-2">GraphQL Errors:</p>
+              {error.graphQLErrors.map((err, idx) => (
+                <pre key={idx} className="text-xs overflow-auto">
+                  {JSON.stringify(err, null, 2)}
+                </pre>
+              ))}
+            </div>
+          )}
+          {error.networkError && (
+            <div className="text-sm text-left bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-4">
+              <p className="font-semibold mb-2">Network Error:</p>
+              <pre className="text-xs overflow-auto">{JSON.stringify(error.networkError, null, 2)}</pre>
+            </div>
+          )}
           <button
             onClick={() => refetch()}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -102,7 +126,9 @@ export default function DataTable({ tableName }: DataTableProps) {
             )}
           />
         </div>
-        <div className="text-sm text-gray-600 dark:text-gray-400">{filteredData.length} registros</div>
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          {pageInfo ? `${pageInfo.totalCount} registros totales` : `${displayData.length} registros`}
+        </div>
       </div>
 
       {/* Table */}
@@ -124,7 +150,7 @@ export default function DataTable({ tableName }: DataTableProps) {
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-layout-dark-800 divide-y divide-layout-light-200 dark:divide-layout-dark-700">
-            {paginatedData.map((item, index) => (
+            {displayData.map((item, index) => (
               <motion.tr
                 key={String(item.id) || index}
                 initial={{ opacity: 0, y: 20 }}
@@ -145,14 +171,6 @@ export default function DataTable({ tableName }: DataTableProps) {
                 ))}
                 <td className="px-4 py-3 text-sm text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <motion.button
-                      className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      title="Ver"
-                    >
-                      <Eye size={16} />
-                    </motion.button>
                     <motion.button
                       className="p-1.5 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30"
                       whileHover={{ scale: 1.1 }}
@@ -176,7 +194,7 @@ export default function DataTable({ tableName }: DataTableProps) {
           </tbody>
         </table>
 
-        {filteredData.length === 0 && (
+        {displayData.length === 0 && (
           <div className="p-12 text-center text-gray-500 dark:text-gray-400">
             <p className="text-lg">No se encontraron resultados</p>
             <p className="text-sm mt-2">Intenta con otro término de búsqueda</p>
@@ -186,45 +204,13 @@ export default function DataTable({ tableName }: DataTableProps) {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Página {currentPage} de {totalPages}
-          </div>
-          <div className="flex items-center gap-2">
-            <motion.button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className={clsx(
-                "p-2 rounded-lg flex items-center gap-2",
-                "transition-colors duration-200",
-                currentPage === 1
-                  ? "bg-gray-100 dark:bg-layout-dark-700 text-gray-400 dark:text-gray-600 cursor-not-allowed"
-                  : "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30"
-              )}
-              whileHover={currentPage !== 1 ? { scale: 1.05 } : {}}
-              whileTap={currentPage !== 1 ? { scale: 0.95 } : {}}
-            >
-              <ChevronLeft size={16} />
-              Anterior
-            </motion.button>
-            <motion.button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className={clsx(
-                "p-2 rounded-lg flex items-center gap-2",
-                "transition-colors duration-200",
-                currentPage === totalPages
-                  ? "bg-gray-100 dark:bg-layout-dark-700 text-gray-400 dark:text-gray-600 cursor-not-allowed"
-                  : "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30"
-              )}
-              whileHover={currentPage !== totalPages ? { scale: 1.05 } : {}}
-              whileTap={currentPage !== totalPages ? { scale: 0.95 } : {}}
-            >
-              Siguiente
-              <ChevronRight size={16} />
-            </motion.button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+          setItemsPerPage={setItemsPerPage}
+          itemsPerPage={itemsPerPage}
+        />
       )}
 
       {/* Empty State - No Data */}

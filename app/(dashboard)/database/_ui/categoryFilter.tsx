@@ -26,6 +26,7 @@ const categoryIcons: Record<string, string> = {
   Social: "❤️",
   Contenido: "📝",
   Sostenibilidad: "🌱",
+  Tienda: "🏪",
 };
 
 export default function CategoryFilter({ selectedCategory, onCategoryChange, tableCounts }: CategoryFilterProps) {

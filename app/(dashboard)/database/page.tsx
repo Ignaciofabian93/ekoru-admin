@@ -1,16 +1,16 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import MainLayout from "@/ui/layout/mainLayout";
+import { motion } from "motion/react";
+import { redirect } from "next/navigation";
 import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
-import { databaseTables, TableCategory } from "./_constants/data";
-import TableCard from "./_components/TableCard";
-import CategoryFilter from "./_components/CategoryFilter";
-import TableDetailModal from "./_components/TableDetailModal";
 import { DatabaseTable } from "./_constants/data";
-import { motion } from "motion/react";
+import { databaseTables, TableCategory } from "./_constants/data";
+import CategoryFilter from "./_ui/categoryFilter";
+import TableDetailModal from "./_ui/tableDetailModal";
+import TableCard from "./_ui/tableCard";
+import MainLayout from "@/ui/layout/mainLayout";
 import useAdminType from "@/hooks/useAdminType";
-import { redirect } from "next/navigation";
 
 export default function DatabasePage() {
   const { isPlatformAdmin } = useAdminType();
@@ -99,7 +99,7 @@ export default function DatabasePage() {
       />
 
       {/* Tables Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-12">
         {filteredTables.map((table, index) => (
           <motion.div
             key={table.name}

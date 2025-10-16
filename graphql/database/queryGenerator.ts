@@ -1,22 +1,36 @@
 import { gql, DocumentNode } from "@apollo/client";
+import { GET_CITIES, GET_COUNTIES, GET_COUNTRIES, GET_REGIONS } from "../location/queries";
+import { GET_SELLER_LEVELS } from "../sellerLevels/queries";
 
 /**
  * Generate a GraphQL query for a specific table
  * This should match the query naming convention in your GraphQL schema
+ * All tables use page-based pagination with pageInfo and nodes structure
  */
 export const generateTableQuery = (tableName: string): DocumentNode => {
   // Convert table name to query name (e.g., "admins" -> "getAdmins")
   const queryName = `get${tableName.charAt(0).toUpperCase() + tableName.slice(1)}`;
 
-  // You'll need to customize the fields based on your schema
-  // For now, using common fields. Later, you can make this dynamic
+  // All tables use page-based pagination
   return gql`
-    query ${queryName}($limit: Int, $offset: Int) {
-      ${queryName}(limit: $limit, offset: $offset) {
-        id
-        createdAt
-        updatedAt
-        # Add other common fields here
+    query ${queryName}($page: Int, $pageSize: Int) {
+      ${queryName}(page: $page, pageSize: $pageSize) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+          totalCount
+          totalPages
+          currentPage
+          pageSize
+        }
+        nodes {
+          id
+          createdAt
+          updatedAt
+          # Add other common fields here
+        }
       }
     }
   `;
@@ -28,96 +42,97 @@ export const generateTableQuery = (tableName: string): DocumentNode => {
  */
 export const TABLE_QUERIES: Record<string, DocumentNode> = {
   admins: gql`
-    query GetAdmins($limit: Int, $offset: Int, $adminType: AdminType, $isActive: Boolean, $role: Role) {
-      getAdmins(adminType: $adminType, isActive: $isActive, role: $role, limit: $limit, offset: $offset) {
-        id
-        email
-        name
-        lastName
-        adminType
-        role
-        permissions
-        isActive
-        isEmailVerified
-        accountLocked
-        loginAttempts
-        lastLoginAt
-        lastLoginIp
-        createdAt
-        updatedAt
-        cityId
-        countryId
-        countyId
-        regionId
-        region {
-          id
-          region
-          countryId
+    query GetAdmins($page: Int, $pageSize: Int, $adminType: AdminType, $isActive: Boolean, $role: Role) {
+      getAdmins(adminType: $adminType, isActive: $isActive, role: $role, page: $page, pageSize: $pageSize) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+          totalCount
+          totalPages
+          currentPage
+          pageSize
         }
-        county {
+        nodes {
           id
-          county
+          email
+          name
+          lastName
+          adminType
+          role
+          permissions
+          isActive
+          isEmailVerified
+          accountLocked
+          loginAttempts
+          lastLoginAt
+          lastLoginIp
+          createdAt
+          updatedAt
           cityId
-        }
-        country {
-          id
-          country
-        }
-        city {
-          id
-          city
+          countryId
+          countyId
           regionId
+          region {
+            id
+            region
+            countryId
+          }
+          county {
+            id
+            county
+            cityId
+          }
+          country {
+            id
+            country
+          }
+          city {
+            id
+            city
+            regionId
+          }
         }
       }
     }
   `,
 
   users: gql`
-    query GetUsers($limit: Int, $offset: Int, $isActive: Boolean) {
-      getUsers(limit: $limit, offset: $offset, isActive: $isActive) {
-        id
-        email
-        username
-        firstName
-        lastName
-        phoneNumber
-        isActive
-        isEmailVerified
-        isPhoneVerified
-        createdAt
-        updatedAt
+    query GetUsers($page: Int, $pageSize: Int, $isActive: Boolean) {
+      getUsers(page: $page, pageSize: $pageSize, isActive: $isActive) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+          totalCount
+          totalPages
+          currentPage
+          pageSize
+        }
+        nodes {
+          id
+          email
+          username
+          firstName
+          lastName
+          phoneNumber
+          isActive
+          isEmailVerified
+          isPhoneVerified
+          createdAt
+          updatedAt
+        }
       }
     }
   `,
 
-  Countries: gql`
-    query GetCountries($limit: Int, $offset: Int) {
-      getCountries(limit: $limit, offset: $offset) {
-        id
-        country
-      }
-    }
-  `,
-
-  Regions: gql`
-    query GetRegions($limit: Int, $offset: Int) {
-      getRegions(limit: $limit, offset: $offset) {
-        id
-        region
-        countryId
-      }
-    }
-  `,
-
-  Cities: gql`
-    query GetCities($limit: Int, $offset: Int) {
-      getCities(limit: $limit, offset: $offset) {
-        id
-        city
-        regionId
-      }
-    }
-  `,
+  Countries: GET_COUNTRIES,
+  Regions: GET_REGIONS,
+  Cities: GET_CITIES,
+  Counties: GET_COUNTIES,
+  SellerLevel: GET_SELLER_LEVELS,
 
   // Add more table-specific queries as needed
 };

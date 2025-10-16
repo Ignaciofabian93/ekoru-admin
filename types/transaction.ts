@@ -4,8 +4,8 @@ export type Transaction = {
   id: number;
   kind: TransactionKind;
   pointsCollected: number;
-  createdAt: string;
-  sellerId: string; // Changed from userId to sellerId
+  createdAt: Date;
+  sellerId: string;
 };
 
 export type Exchange = {
@@ -14,7 +14,7 @@ export type Exchange = {
   offeredProductId: number;
   requestedProductId: number;
   status: ExchangeStatus;
-  notes?: string;
-  createdAt: string;
-  completedAt?: string;
+  notes?: string | null;
+  createdAt: Date;
+  completedAt?: Date | null;
 };

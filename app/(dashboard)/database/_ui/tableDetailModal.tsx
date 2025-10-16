@@ -6,9 +6,10 @@ import { DatabaseTable } from "../_constants/data";
 import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
 import clsx from "clsx";
-import DataTable from "./DataTable";
-import ExportImportModal from "./ExportImportModal";
+import DataTable from "./dataTable";
+import ExportImportModal from "./exportImportModal";
 import { useTableData } from "@/hooks/useTableData";
+import NewRecordModal from "./newRecordModal";
 
 interface TableDetailModalProps {
   table: DatabaseTable | null;
@@ -17,13 +18,16 @@ interface TableDetailModalProps {
 }
 
 export default function TableDetailModal({ table, isOpen, onClose }: TableDetailModalProps) {
-  const [showExportImportModal, setShowExportImportModal] = useState(false);
+  const [showExportImportModal, setShowExportImportModal] = useState<boolean>(false);
+  const [showNewRecordModal, setShowNewRecordModal] = useState<boolean>(false);
 
-  // Fetch all data for export (without pagination)
+  console.log("TableDetailModal render:", { table });
+
+  // Fetch all data for export with large page size
   const { data, loading, refetch } = useTableData({
     tableName: table?.name || "",
-    limit: 10000, // Get all data for export
-    offset: 0,
+    page: 1,
+    pageSize: 10000, // Get all data for export
   });
 
   if (!table) return null;
@@ -75,8 +79,7 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
                 "bg-white dark:bg-layout-dark-800",
                 "rounded-2xl shadow-2xl",
                 "border-2 border-layout-light-200 dark:border-layout-dark-700",
-                "flex flex-col",
-                "overflow-hidden"
+                "flex flex-col"
               )}
             >
               {/* Header */}
@@ -108,6 +111,7 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     title="Agregar registro"
+                    onClick={() => setShowNewRecordModal(true)}
                   >
                     <Plus size={20} />
                   </motion.button>
@@ -168,6 +172,17 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
               </div>
             </motion.div>
           </div>
+
+          {/* New Record Modal */}
+          <NewRecordModal
+            isOpen={showNewRecordModal}
+            onClose={() => setShowNewRecordModal(false)}
+            tableName={table.name}
+            tableLabel={table.label}
+            data={data}
+            columns={columns}
+            onRecordCreated={refetch} // Refresh table data after creating record
+          />
 
           {/* Export/Import Modal */}
           <ExportImportModal

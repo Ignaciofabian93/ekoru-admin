@@ -1,6 +1,7 @@
 import { gql, DocumentNode } from "@apollo/client";
 import { GET_CITIES, GET_COUNTIES, GET_COUNTRIES, GET_REGIONS } from "../location/queries";
 import { GET_SELLER_LEVELS } from "../sellerLevels/queries";
+import { GET_DEPARTMENTS } from "../product/queries";
 
 /**
  * Generate a GraphQL query for a specific table
@@ -133,6 +134,7 @@ export const TABLE_QUERIES: Record<string, DocumentNode> = {
   Cities: GET_CITIES,
   Counties: GET_COUNTIES,
   SellerLevel: GET_SELLER_LEVELS,
+  Departments: GET_DEPARTMENTS,
 
   // Add more table-specific queries as needed
 };

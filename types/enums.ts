@@ -98,7 +98,15 @@ export type ShippingStage = "PREPARING" | "SHIPPED" | "DELIVERED" | "RETURNED" |
 export type ExchangeStatus = "PENDING" | "ACCEPTED" | "DECLINED" | "COMPLETED" | "CANCELLED";
 
 // Payment Related Enums
-export type PaymentStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED" | "REFUNDED" | "PARTIALLY_REFUNDED" | "EXPIRED";
+export type PaymentStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED"
+  | "CANCELLED"
+  | "REFUNDED"
+  | "PARTIALLY_REFUNDED"
+  | "EXPIRED";
 export type RefundStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED";
 export type PaymentEnvironment = "SANDBOX" | "PRODUCTION";
 export type ChileanPaymentProvider = "KHIPU" | "WEBPAY";
@@ -137,18 +145,19 @@ export type NotificationType =
 export type NotificationPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
 // Blog Related Enums
-export type BlogCategory =
-  | "RECYCLING"
-  | "POLLUTION"
-  | "SUSTAINABILITY"
-  | "CIRCULAR_ECONOMY"
-  | "USED_PRODUCTS"
-  | "REUSE"
-  | "ENVIRONMENT"
-  | "UPCYCLING"
-  | "RESPONSIBLE_CONSUMPTION"
-  | "ECO_TIPS"
-  | "ENVIRONMENTAL_IMPACT"
-  | "SUSTAINABLE_LIVING"
-  | "OTHER"
-  | "SECURITY";
+export enum BlogCategory {
+  RECYCLING = "RECYCLING",
+  POLLUTION = "POLLUTION",
+  SUSTAINABILITY = "SUSTAINABILITY",
+  CIRCULAR_ECONOMY = "CIRCULAR_ECONOMY",
+  USED_PRODUCTS = "USED_PRODUCTS",
+  REUSE = "REUSE",
+  ENVIRONMENT = "ENVIRONMENT",
+  UPCYCLING = "UPCYCLING",
+  RESPONSIBLE_CONSUMPTION = "RESPONSIBLE_CONSUMPTION",
+  ECO_TIPS = "ECO_TIPS",
+  ENVIRONMENTAL_IMPACT = "ENVIRONMENTAL_IMPACT",
+  SUSTAINABLE_LIVING = "SUSTAINABLE_LIVING",
+  OTHER = "OTHER",
+  SECURITY = "SECURITY",
+}

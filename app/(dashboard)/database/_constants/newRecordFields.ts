@@ -105,7 +105,7 @@ export const tableFieldConfigs: Record<string, FieldConfig[]> = {
   ],
 
   // Department & Categories
-  Department: [
+  Departments: [
     {
       name: "departmentName",
       label: "Nombre del Departamento",

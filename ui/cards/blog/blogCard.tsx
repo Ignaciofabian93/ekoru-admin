@@ -22,20 +22,20 @@ interface BlogCardProps {
 }
 
 const categoryColors: Record<BlogCategory, string> = {
-  [BlogCategory.RECYCLING]: "bg-green-100 text-green-800",
-  [BlogCategory.POLLUTION]: "bg-red-100 text-red-800",
-  [BlogCategory.SUSTAINABILITY]: "bg-emerald-100 text-emerald-800",
-  [BlogCategory.CIRCULAR_ECONOMY]: "bg-blue-100 text-blue-800",
-  [BlogCategory.USED_PRODUCTS]: "bg-purple-100 text-purple-800",
-  [BlogCategory.REUSE]: "bg-teal-100 text-teal-800",
-  [BlogCategory.ENVIRONMENT]: "bg-lime-100 text-lime-800",
-  [BlogCategory.UPCYCLING]: "bg-cyan-100 text-cyan-800",
-  [BlogCategory.RESPONSIBLE_CONSUMPTION]: "bg-indigo-100 text-indigo-800",
-  [BlogCategory.ECO_TIPS]: "bg-yellow-100 text-yellow-800",
-  [BlogCategory.ENVIRONMENTAL_IMPACT]: "bg-orange-100 text-orange-800",
-  [BlogCategory.SUSTAINABLE_LIVING]: "bg-green-100 text-green-800",
-  [BlogCategory.SECURITY]: "bg-slate-100 text-slate-800",
-  [BlogCategory.OTHER]: "bg-gray-100 text-gray-800",
+  RECYCLING: "bg-green-100 text-green-800",
+  POLLUTION: "bg-red-100 text-red-800",
+  SUSTAINABILITY: "bg-emerald-100 text-emerald-800",
+  CIRCULAR_ECONOMY: "bg-blue-100 text-blue-800",
+  USED_PRODUCTS: "bg-purple-100 text-purple-800",
+  REUSE: "bg-teal-100 text-teal-800",
+  ENVIRONMENT: "bg-lime-100 text-lime-800",
+  UPCYCLING: "bg-cyan-100 text-cyan-800",
+  RESPONSIBLE_CONSUMPTION: "bg-indigo-100 text-indigo-800",
+  ECO_TIPS: "bg-yellow-100 text-yellow-800",
+  ENVIRONMENTAL_IMPACT: "bg-orange-100 text-orange-800",
+  SUSTAINABLE_LIVING: "bg-green-100 text-green-800",
+  SECURITY: "bg-slate-100 text-slate-800",
+  OTHER: "bg-gray-100 text-gray-800",
 };
 
 export function BlogCard({
@@ -114,7 +114,7 @@ export function BlogCard({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+        <div className="flex items-start flex-wrap gap-2 pt-4 border-t border-gray-100">
           <button
             onClick={() => onEdit(Number(id))}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors text-sm font-medium"
@@ -136,9 +136,10 @@ export function BlogCard({
           </button>
           <button
             onClick={() => onDelete(id)}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors text-sm font-medium"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors text-sm font-medium"
           >
             <Trash2 className="w-4 h-4" />
+            Eliminar
           </button>
         </div>
       </div>

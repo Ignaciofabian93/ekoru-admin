@@ -53,12 +53,8 @@ export default function useLogin() {
 
     setIsLoading(true);
     const response = await Login({ email: sanitizedEmail, password }); // Don't sanitize password
-    console.log("RES:: ", response);
-
     if (response && response.token) {
       const { data: userData } = await getMyData();
-      console.log("USER DATA:: ", userData);
-
       if (!userLoading && userData.getMyData?.id) {
         handleSession(userData.getMyData);
         notify("Inicio de sesión exitoso.");

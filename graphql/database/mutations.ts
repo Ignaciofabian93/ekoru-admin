@@ -43,7 +43,7 @@ export const CREATE_MUTATIONS: Record<string, DocumentNode> = {
   `,
 
   // Catalog
-  Department: gql`
+  Departments: gql`
     mutation CreateDepartment($input: CreateDepartmentInput!) {
       createDepartment(input: $input) {
         id

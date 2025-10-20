@@ -21,6 +21,19 @@ import ControlsSection from "./_ui/controls";
 import BlogsGridSection from "./_ui/blogsGrid";
 
 type FilterType = "all" | "published" | "draft";
+type QueryConnection = {
+  pageInfo: {
+    currentPage: number;
+    endCursor: string | null;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    pageSize: number;
+    startCursor: string | null;
+    totalCount: number;
+    totalPages: number;
+  };
+  nodes: BlogPost[];
+};
 
 export default function BlogPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -30,17 +43,31 @@ export default function BlogPage() {
   const [filterType, setFilterType] = useState<FilterType>("all");
 
   // GraphQL queries and mutations
-  const { data, loading, error, refetch } = useQuery(GET_BLOG_POSTS);
+  const { data, loading, error, refetch } = useQuery<{ getBlogPosts: QueryConnection }>(GET_BLOG_POSTS);
   const [createBlogPost, { loading: creating }] = useMutation(CREATE_BLOG_POST);
   const [updateBlogPost, { loading: updating }] = useMutation(UPDATE_BLOG_POST);
   const [deleteBlogPost] = useMutation(DELETE_BLOG_POST);
   const [publishBlogPost] = useMutation(PUBLISH_BLOG_POST);
   const [unpublishBlogPost] = useMutation(UNPUBLISH_BLOG_POST);
 
-  const posts: BlogPost[] = data?.getBlogPosts || [];
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page
+  };
+
+  const handleCurrentPageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const posts: BlogPost[] = data?.getBlogPosts.nodes || [];
+  const totalPages: number = data?.getBlogPosts.pageInfo.totalPages || 1;
+  console.log("Fetched blog posts:", posts);
 
   // Filter posts based on search, status, and category
-  const filteredPosts = posts.filter((post) => {
+  const filteredPosts = posts?.filter((post) => {
     const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.content.toLowerCase().includes(searchQuery.toLowerCase());
@@ -60,8 +87,6 @@ export default function BlogPage() {
     isPublished: boolean;
   }) => {
     try {
-      console.log("Creating post with data:", formData);
-
       const result = await createBlogPost({
         variables: {
           input: {
@@ -72,10 +97,10 @@ export default function BlogPage() {
           },
         },
       });
-
-      console.log("Post created successfully:", result);
-      setIsCreateModalOpen(false);
-      refetch();
+      if (result.data) {
+        setIsCreateModalOpen(false);
+        refetch();
+      }
     } catch (err) {
       console.error("Error creating blog post:", err);
       alert("Error al crear el post: " + (err instanceof Error ? err.message : "Error desconocido"));
@@ -178,6 +203,11 @@ export default function BlogPage() {
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handleTogglePublish={handleTogglePublish}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          handleItemsPerPageChange={handleItemsPerPageChange}
+          handleCurrentPageChange={handleCurrentPageChange}
         />
 
         {/* Create Modal */}

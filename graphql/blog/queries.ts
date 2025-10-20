@@ -1,21 +1,34 @@
 import { gql } from "@apollo/client";
 
 export const GET_BLOG_POSTS = gql`
-  query GetBlogPosts($offset: Int, $limit: Int, $isPublished: Boolean, $category: BlogCategory) {
-    getBlogPosts(offset: $offset, limit: $limit, isPublished: $isPublished, category: $category) {
-      id
-      title
-      content
-      isPublished
-      publishedAt
-      createdAt
-      updatedAt
-      category
-      author {
+  query GetBlogPosts($pageSize: Int, $page: Int, $isPublished: Boolean, $category: BlogCategory) {
+    getBlogPosts(pageSize: $pageSize, page: $page, isPublished: $isPublished, category: $category) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+        totalCount
+        totalPages
+        currentPage
+        pageSize
+      }
+      nodes {
         id
-        name
-        lastName
-        email
+        title
+        content
+        authorId
+        isPublished
+        publishedAt
+        createdAt
+        updatedAt
+        category
+        author {
+          id
+          email
+          name
+          lastName
+        }
       }
     }
   }

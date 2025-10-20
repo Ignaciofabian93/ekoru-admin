@@ -54,7 +54,7 @@ export default function ExportImportModal({
           filename = exportToJSON(data, tableName);
           break;
       }
-      console.log(`Exported to ${filename}`);
+      return filename;
     } catch (error) {
       console.error("Export failed:", error);
       alert(`Export failed: ${error instanceof Error ? error.message : "Unknown error"}`);

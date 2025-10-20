@@ -41,14 +41,12 @@ export default function useCoverImage() {
 
       // Upload file and get URL
       const imageUrl = await uploadCoverImage(file);
-      console.log("Uploaded cover image URL:", imageUrl);
 
       // Update state with permanent URL
       setCoverImage(imageUrl);
     } catch (error) {
       console.error("Error uploading cover image:", error);
       alert("Error al subir la imagen. Inténtalo de nuevo.");
-      setCoverImage(data.profile?.coverImage || null);
     } finally {
       setIsUploading(false);
     }

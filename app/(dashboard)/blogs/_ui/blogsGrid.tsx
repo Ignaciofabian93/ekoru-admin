@@ -1,10 +1,11 @@
 import { BlogPost } from "@/types/blog";
-import MainButton from "@/ui/buttons/mainButton";
 import { BlogCard } from "@/ui/cards/blog";
 import { Text } from "@/ui/text/text";
 import { Title } from "@/ui/text/title";
 import { ApolloError } from "@apollo/client";
 import { FileText, Plus } from "lucide-react";
+import MainButton from "@/ui/buttons/mainButton";
+import Pagination from "@/ui/pagination/pagination";
 
 type Props = {
   filteredPosts: BlogPost[];
@@ -16,6 +17,11 @@ type Props = {
   handleEdit: (id: number) => void;
   handleDelete: (id: number) => void;
   handleTogglePublish: (id: number, currentState: boolean) => void;
+  handleItemsPerPageChange: (newItemsPerPage: number) => void;
+  handleCurrentPageChange: (newPage: number) => void;
+  currentPage: number;
+  itemsPerPage: number;
+  totalPages: number;
 };
 
 export default function BlogsGridSection({
@@ -28,9 +34,12 @@ export default function BlogsGridSection({
   handleEdit,
   handleDelete,
   handleTogglePublish,
+  handleItemsPerPageChange,
+  handleCurrentPageChange,
+  currentPage,
+  itemsPerPage,
+  totalPages,
 }: Props) {
-  console.log("posts in grid section:", filteredPosts);
-
   return (
     <section>
       {loading ? (
@@ -73,6 +82,17 @@ export default function BlogsGridSection({
               authorName={`${post.author.name} ${post.author.lastName}`}
             />
           ))}
+        </div>
+      )}
+      {filteredPosts.length > 0 && (
+        <div className="mt-8 flex justify-end items-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={handleCurrentPageChange}
+            setItemsPerPage={handleItemsPerPageChange}
+            itemsPerPage={itemsPerPage}
+          />
         </div>
       )}
     </section>

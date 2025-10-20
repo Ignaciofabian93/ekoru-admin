@@ -79,15 +79,9 @@ export function BlogForm({ initialData, onSubmit, onCancel, isLoading = false }:
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted", formData);
-    console.log("Validation result:", validate());
-    console.log("Category:", formData.category);
-
     if (validate() && formData.category) {
-      console.log("Calling onSubmit with:", formData);
       onSubmit(formData as BlogFormData);
     } else {
-      console.log("Validation failed or no category");
     }
   };
 

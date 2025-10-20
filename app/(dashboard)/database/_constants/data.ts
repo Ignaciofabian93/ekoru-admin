@@ -93,7 +93,7 @@ export const databaseTables: DatabaseTable[] = [
 
   // Products & Catalog
   {
-    name: "Department",
+    name: "Departments",
     label: "Departamentos",
     description: "Departamentos principales de productos",
     category: "Catálogo",

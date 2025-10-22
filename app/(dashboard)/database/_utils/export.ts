@@ -28,13 +28,23 @@ export const exportToExcel = (data: Record<string, unknown>[], tableName: string
         if (value === null || value === undefined) {
           cleaned[key] = "";
         } else if (typeof value === "object" && !Array.isArray(value)) {
-          cleaned[key] = JSON.stringify(value);
+          const jsonStr = JSON.stringify(value);
+          // Excel cell limit is 32,767 characters
+          cleaned[key] = jsonStr.length > 32767 ? "" : jsonStr;
         } else if (Array.isArray(value)) {
-          cleaned[key] = JSON.stringify(value);
+          const jsonStr = JSON.stringify(value);
+          cleaned[key] = jsonStr.length > 32767 ? "" : jsonStr;
         } else if (typeof value === "boolean") {
           cleaned[key] = value ? "Yes" : "No";
         } else {
-          cleaned[key] = value;
+          const stringValue = String(value);
+          // Handle base64 images and other large text values
+          if (stringValue.startsWith("data:image/") || stringValue.length > 32767) {
+            // Return empty cell for base64 images or text exceeding Excel's limit
+            cleaned[key] = "";
+          } else {
+            cleaned[key] = stringValue;
+          }
         }
       }
     });

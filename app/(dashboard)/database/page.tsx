@@ -62,28 +62,19 @@ export default function DatabasePage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <motion.div
-          className="p-6 rounded-xl bg-gradient-to-br from-lime-600 to-lime-900 text-white shadow-lg"
-          whileHover={{ scale: 1.02, y: -4 }}
-        >
+        <motion.div className="p-6 rounded-xl bg-gradient-to-br from-lime-600 to-lime-900 text-white shadow-lg">
           <div className="text-3xl font-bold">{databaseTables.length}</div>
           <Text variant="p" className="text-white">
             Tablas totales
           </Text>
         </motion.div>
-        <motion.div
-          className="p-6 rounded-xl bg-gradient-to-br from-purple-600 to-purple-900 text-white shadow-lg"
-          whileHover={{ scale: 1.02, y: -4 }}
-        >
+        <motion.div className="p-6 rounded-xl bg-gradient-to-br from-purple-600 to-purple-900 text-white shadow-lg">
           <div className="text-3xl font-bold">{Object.keys(tableCounts).length}</div>
           <Text variant="p" className="text-white">
             Categorías
           </Text>
         </motion.div>
-        <motion.div
-          className="p-6 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-900 text-white shadow-lg"
-          whileHover={{ scale: 1.02, y: -4 }}
-        >
+        <motion.div className="p-6 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-900 text-white shadow-lg">
           <div className="text-3xl font-bold">{filteredTables.length}</div>
           <Text variant="p" className="text-white">
             Tablas filtradas

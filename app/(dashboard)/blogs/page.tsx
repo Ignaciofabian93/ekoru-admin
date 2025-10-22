@@ -64,7 +64,6 @@ export default function BlogPage() {
 
   const posts: BlogPost[] = data?.getBlogPosts.nodes || [];
   const totalPages: number = data?.getBlogPosts.pageInfo.totalPages || 1;
-  console.log("Fetched blog posts:", posts);
 
   // Filter posts based on search, status, and category
   const filteredPosts = posts?.filter((post) => {

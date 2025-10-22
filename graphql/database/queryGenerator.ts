@@ -1,7 +1,7 @@
 import { gql, DocumentNode } from "@apollo/client";
 import { GET_CITIES, GET_COUNTIES, GET_COUNTRIES, GET_REGIONS } from "../location/queries";
 import { GET_SELLER_LEVELS } from "../sellerLevels/queries";
-import { GET_DEPARTMENTS } from "../product/queries";
+import { GET_DEPARTMENT_CATEGORIES, GET_DEPARTMENTS, GET_PRODUCT_CATEGORIES } from "../product/queries";
 
 /**
  * Generate a GraphQL query for a specific table
@@ -28,9 +28,6 @@ export const generateTableQuery = (tableName: string): DocumentNode => {
         }
         nodes {
           id
-          createdAt
-          updatedAt
-          # Add other common fields here
         }
       }
     }
@@ -42,99 +39,14 @@ export const generateTableQuery = (tableName: string): DocumentNode => {
  * Define detailed queries for tables that need specific fields
  */
 export const TABLE_QUERIES: Record<string, DocumentNode> = {
-  admins: gql`
-    query GetAdmins($page: Int, $pageSize: Int, $adminType: AdminType, $isActive: Boolean, $role: Role) {
-      getAdmins(adminType: $adminType, isActive: $isActive, role: $role, page: $page, pageSize: $pageSize) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
-          totalCount
-          totalPages
-          currentPage
-          pageSize
-        }
-        nodes {
-          id
-          email
-          name
-          lastName
-          adminType
-          role
-          permissions
-          isActive
-          isEmailVerified
-          accountLocked
-          loginAttempts
-          lastLoginAt
-          lastLoginIp
-          createdAt
-          updatedAt
-          cityId
-          countryId
-          countyId
-          regionId
-          region {
-            id
-            region
-            countryId
-          }
-          county {
-            id
-            county
-            cityId
-          }
-          country {
-            id
-            country
-          }
-          city {
-            id
-            city
-            regionId
-          }
-        }
-      }
-    }
-  `,
-
-  users: gql`
-    query GetUsers($page: Int, $pageSize: Int, $isActive: Boolean) {
-      getUsers(page: $page, pageSize: $pageSize, isActive: $isActive) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
-          totalCount
-          totalPages
-          currentPage
-          pageSize
-        }
-        nodes {
-          id
-          email
-          username
-          firstName
-          lastName
-          phoneNumber
-          isActive
-          isEmailVerified
-          isPhoneVerified
-          createdAt
-          updatedAt
-        }
-      }
-    }
-  `,
-
   Countries: GET_COUNTRIES,
   Regions: GET_REGIONS,
   Cities: GET_CITIES,
   Counties: GET_COUNTIES,
   SellerLevel: GET_SELLER_LEVELS,
   Departments: GET_DEPARTMENTS,
+  DepartmentCategories: GET_DEPARTMENT_CATEGORIES,
+  ProductCategories: GET_PRODUCT_CATEGORIES,
 
   // Add more table-specific queries as needed
 };
@@ -144,7 +56,5 @@ export const TABLE_QUERIES: Record<string, DocumentNode> = {
  * Falls back to generated query if no specific query exists
  */
 export const getTableQuery = (tableName: string): DocumentNode => {
-  console.log("Getting query for table:", tableName);
-
   return TABLE_QUERIES[tableName] || generateTableQuery(tableName);
 };

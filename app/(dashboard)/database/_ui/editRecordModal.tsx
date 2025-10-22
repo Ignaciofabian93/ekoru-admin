@@ -6,36 +6,36 @@ import { AnimatePresence, motion } from "motion/react";
 import { getTableFieldConfig, hasFieldConfig } from "../_constants/newRecordFields";
 import DynamicForm from "./dynamicForm";
 import { useMutation, gql } from "@apollo/client";
-import { getCreateMutation, hasCreateMutation } from "@/graphql/database/mutations";
+import { getUpdateMutation, hasUpdateMutation } from "@/graphql/database/mutations";
 import useAlert from "@/hooks/useAlert";
 
-type NewRecordModalProps = {
+type EditRecordModalProps = {
   isOpen: boolean;
   onClose: () => void;
   tableName: string;
   tableLabel: string;
-  data: Record<string, unknown>[];
-  columns: string[];
-  onRecordCreated?: () => void; // Callback to refresh table data
+  selectedRowData: Record<string, unknown> | null;
+  onRecordUpdated?: () => void; // Callback to refresh table data
 };
 
-export default function NewRecordModal({
+export default function EditRecordModal({
   isOpen,
   onClose,
   tableName,
   tableLabel,
-  onRecordCreated,
-}: NewRecordModalProps) {
+  selectedRowData,
+  onRecordUpdated,
+}: EditRecordModalProps) {
   const fields = getTableFieldConfig(tableName);
   const hasConfig = hasFieldConfig(tableName);
-  const hasMutation = hasCreateMutation(tableName);
+  const hasMutation = hasUpdateMutation(tableName);
   const { notify, notifyError } = useAlert();
 
   // Get the mutation for this table
-  const mutation = getCreateMutation(tableName);
+  const mutation = getUpdateMutation(tableName);
 
   // Create the mutation hook
-  const [createRecord, { loading }] = useMutation(
+  const [updateRecord, { loading }] = useMutation(
     mutation ||
       gql`
         mutation Placeholder {
@@ -44,35 +44,49 @@ export default function NewRecordModal({
       `,
     {
       onCompleted: (data) => {
-        console.log("data:: ", data);
-
-        notify("Registro creado exitosamente");
-        onRecordCreated?.(); // Refresh table data
+        console.log("Update completed:", data);
+        notify("Registro actualizado exitosamente");
+        onRecordUpdated?.(); // Refresh table data
         onClose();
       },
       onError: (error) => {
-        console.error("Error creating record:", error);
-        notifyError(`Error al crear registro: ${error.message}`);
+        console.error("Error updating record:", error);
+        notifyError(`Error al actualizar registro: ${error.message}`);
       },
     }
   );
 
   const handleSubmit = async (formData: Record<string, unknown>) => {
     if (!hasMutation) {
-      notifyError("No hay mutación configurada para esta tabla");
+      notifyError("No hay mutación de actualización configurada para esta tabla");
+      return;
+    }
+
+    if (!selectedRowData?.id) {
+      notifyError("No se puede actualizar: falta el ID del registro");
       return;
     }
 
     try {
-      await createRecord({
+      // Remove __typename and id from input data
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { __typename, id, ...inputData } = formData;
+
+      await updateRecord({
         variables: {
-          input: formData,
+          id: selectedRowData.id,
+          input: inputData,
         },
       });
     } catch (error) {
       console.error("Mutation error:", error);
     }
   };
+
+  // Prepare initial values from selected row data
+  const initialValues = selectedRowData
+    ? Object.fromEntries(Object.entries(selectedRowData).filter(([key]) => key !== "__typename"))
+    : {};
 
   return (
     <AnimatePresence>
@@ -104,12 +118,12 @@ export default function NewRecordModal({
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-layout-light-200 dark:border-layout-dark-700">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-lime-500 to-teal-600 rounded-lg text-white">
+                  <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg text-white">
                     <Database size={24} />
                   </div>
                   <div>
                     <Title variant="h4" className="font-bold">
-                      Nuevo registro
+                      Editar registro
                     </Title>
                     <Text variant="p" className="text-sm">
                       {tableLabel}
@@ -127,7 +141,13 @@ export default function NewRecordModal({
               {/* Content */}
               <div className="p-6">
                 {hasConfig ? (
-                  <DynamicForm fields={fields} onSubmit={handleSubmit} onCancel={onClose} isLoading={loading} />
+                  <DynamicForm
+                    fields={fields}
+                    onSubmit={handleSubmit}
+                    onCancel={onClose}
+                    isLoading={loading}
+                    initialValues={initialValues}
+                  />
                 ) : (
                   <div className="text-center py-8">
                     <AlertCircle size={48} className="mx-auto mb-4 text-yellow-500" />
@@ -136,11 +156,11 @@ export default function NewRecordModal({
                     </Title>
                     <Text variant="p" className="text-gray-600 dark:text-gray-400">
                       La tabla <span className="font-mono font-semibold">{tableName}</span> aún no tiene campos
-                      configurados para crear nuevos registros.
+                      configurados para editar registros.
                     </Text>
                     {!hasMutation && hasConfig && (
                       <Text variant="p" className="text-orange-600 dark:text-orange-400 mt-2">
-                        ⚠️ Tampoco hay una mutación GraphQL configurada para esta tabla.
+                        ⚠️ Tampoco hay una mutación GraphQL de actualización configurada para esta tabla.
                       </Text>
                     )}
                   </div>

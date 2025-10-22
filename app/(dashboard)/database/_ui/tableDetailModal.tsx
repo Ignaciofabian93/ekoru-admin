@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Download, Plus, RefreshCw, Database } from "lucide-react";
+import { useMutation, gql } from "@apollo/client";
 import { DatabaseTable } from "../_constants/data";
 import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
@@ -10,6 +11,18 @@ import DataTable from "./dataTable";
 import ExportImportModal from "./exportImportModal";
 import { useTableData } from "@/hooks/useTableData";
 import NewRecordModal from "./newRecordModal";
+import EditRecordModal from "./editRecordModal";
+import DeleteRecordModal from "./deleteRecordModal";
+import { getBulkImportMutation, hasBulkImportMutation } from "@/graphql/database/mutations";
+import { BulkImportResult } from "@/types/bulk";
+import useAlert from "@/hooks/useAlert";
+
+// Dummy mutation as fallback for useMutation (never actually called)
+const DUMMY_MUTATION = gql`
+  mutation Dummy {
+    __typename
+  }
+`;
 
 interface TableDetailModalProps {
   table: DatabaseTable | null;
@@ -20,8 +33,29 @@ interface TableDetailModalProps {
 export default function TableDetailModal({ table, isOpen, onClose }: TableDetailModalProps) {
   const [showExportImportModal, setShowExportImportModal] = useState<boolean>(false);
   const [showNewRecordModal, setShowNewRecordModal] = useState<boolean>(false);
+  const [showEditRecordModal, setShowEditRecordModal] = useState<boolean>(false);
+  const [showDeleteRecordModal, setShowDeleteRecordModal] = useState<boolean>(false);
+  const [selectedRowData, setSelectedRowData] = useState<Record<string, unknown> | null>(null);
+  const { notify, notifyError } = useAlert();
 
-  console.log("TableDetailModal render:", { table });
+  console.log("Table: ", table);
+
+  // Get bulk import mutation for this table (if available)
+  // We need to call useMutation unconditionally, so we provide a dummy mutation as fallback
+  const bulkImportMutation = table ? getBulkImportMutation(table.name) : null;
+  const [executeBulkImport] = useMutation(bulkImportMutation || DUMMY_MUTATION);
+
+  const handleEditRow = (rowData: Record<string, unknown>) => {
+    console.log("Edit row: ", rowData);
+    setSelectedRowData(rowData);
+    setShowEditRecordModal(true);
+  };
+
+  const handleDeleteRow = (rowData: Record<string, unknown>) => {
+    console.log("Delete row: ", rowData);
+    setSelectedRowData(rowData);
+    setShowDeleteRecordModal(true);
+  };
 
   // Fetch all data for export with large page size
   const { data, loading, refetch } = useTableData({
@@ -36,22 +70,64 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
   const columns = data.length > 0 ? Object.keys(data[0]).filter((key) => !key.startsWith("__")) : [];
 
   const handleImportComplete = async (importedData: Record<string, unknown>[]) => {
-    // TODO: Call your backend bulk import mutation here
-    console.log("Importing data:", importedData);
+    console.log("Imported Data: ", importedData);
 
-    // Example GraphQL mutation call:
-    // await bulkImportMutation({
-    //   variables: {
-    //     tableName: table.name,
-    //     data: importedData
-    //   }
-    // });
+    // Check if bulk import is available for this table
+    if (!hasBulkImportMutation(table.name)) {
+      notifyError(`Bulk import not available for ${table.label}. Please contact support.`);
+      return;
+    }
 
-    // Refetch data after import
-    await refetch();
+    try {
+      // Determine the variable name based on table name
+      // Examples: ProductCategories -> categories, Departments -> departments
+      const variableName =
+        table.name === "ProductCategories"
+          ? "categories"
+          : table.name === "DepartmentCategory"
+          ? "categories"
+          : table.name === "Departments"
+          ? "departments"
+          : "data"; // fallback
 
-    // Close the export/import modal
-    setShowExportImportModal(false);
+      // Execute bulk import mutation
+      const { data: result } = await executeBulkImport({
+        variables: {
+          [variableName]: importedData,
+        },
+      });
+
+      // Extract result based on mutation name
+      const mutationKey = Object.keys(result)[0];
+      const importResult: BulkImportResult = result[mutationKey];
+
+      console.log("Bulk Import Result:", importResult);
+
+      // Show result to user
+      if (importResult.success) {
+        notify(`✅ Import completed! Created: ${importResult.created}, Failed: ${importResult.failed}`);
+
+        // Show errors if any
+        if (importResult.errors && importResult.errors.length > 0) {
+          console.warn("Import errors:", importResult.errors);
+          importResult.errors.forEach((err) => {
+            console.error(`Row ${err.row}: ${err.error}`, err.data);
+          });
+        }
+      } else {
+        notifyError(`Import failed. Check console for details.`);
+        console.error("Import errors:", importResult.errors);
+      }
+
+      // Refetch data after import
+      await refetch();
+
+      // Close the export/import modal
+      setShowExportImportModal(false);
+    } catch (error) {
+      console.error("Bulk import error:", error);
+      notifyError(`Failed to import data: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
   };
 
   return (
@@ -168,7 +244,7 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
 
               {/* Content */}
               <div className="flex-1 overflow-hidden p-6">
-                <DataTable tableName={table.name} />
+                <DataTable tableName={table.name} handleDeleteRow={handleDeleteRow} handleEditRow={handleEditRow} />
               </div>
             </motion.div>
           </div>
@@ -182,6 +258,32 @@ export default function TableDetailModal({ table, isOpen, onClose }: TableDetail
             data={data}
             columns={columns}
             onRecordCreated={refetch} // Refresh table data after creating record
+          />
+
+          {/* Edit Record Modal */}
+          <EditRecordModal
+            isOpen={showEditRecordModal}
+            onClose={() => {
+              setShowEditRecordModal(false);
+              setSelectedRowData(null);
+            }}
+            tableName={table.name}
+            tableLabel={table.label}
+            selectedRowData={selectedRowData}
+            onRecordUpdated={refetch} // Refresh table data after updating record
+          />
+
+          {/* Delete Record Modal */}
+          <DeleteRecordModal
+            isOpen={showDeleteRecordModal}
+            onClose={() => {
+              setShowDeleteRecordModal(false);
+              setSelectedRowData(null);
+            }}
+            tableName={table.name}
+            tableLabel={table.label}
+            selectedRowData={selectedRowData}
+            onRecordDeleted={refetch} // Refresh table data after deleting record
           />
 
           {/* Export/Import Modal */}

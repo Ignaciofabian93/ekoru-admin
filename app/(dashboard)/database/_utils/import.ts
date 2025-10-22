@@ -39,7 +39,8 @@ export const parseExcelFile = (file: File): Promise<Record<string, unknown>[]> =
         // Convert to JSON
         const jsonData = XLSX.utils.sheet_to_json(worksheet, {
           raw: false, // Keep values as strings for better control
-          defval: null, // Default value for empty cells
+          defval: "", // Use empty string for empty cells (will be converted to null later)
+          blankrows: false, // Skip blank rows
         });
 
         resolve(jsonData as Record<string, unknown>[]);
@@ -165,18 +166,31 @@ export const transformImportData = (
       if (transformMap && transformMap[key]) {
         transformed[key] = transformMap[key](value);
       } else {
-        // Auto-transform common types
-        if (value === null || value === undefined || value === "") {
+        // Handle empty values first (null, undefined, empty string)
+        if (value === null || value === undefined || value === "" || String(value).trim() === "") {
           transformed[key] = null;
-        } else if (["true", "yes", "1"].includes(String(value).toLowerCase())) {
-          transformed[key] = true;
-        } else if (["false", "no", "0"].includes(String(value).toLowerCase())) {
-          transformed[key] = false;
-        } else if (!isNaN(Number(value)) && value !== "") {
-          // Only convert to number if it looks like a number
-          const numValue = Number(value);
-          transformed[key] = Number.isInteger(numValue) ? numValue : parseFloat(value as string);
-        } else {
+        }
+        // Handle explicit string boolean values (ONLY if they are strings)
+        else if (typeof value === "string") {
+          const trimmedValue = value.trim().toLowerCase();
+
+          if (["true", "yes", "1"].includes(trimmedValue)) {
+            transformed[key] = true;
+          } else if (["false", "no", "0"].includes(trimmedValue)) {
+            transformed[key] = false;
+          }
+          // Handle numbers - check if string contains only numeric characters
+          else if (!isNaN(Number(value.trim()))) {
+            const numValue = Number(value.trim());
+            transformed[key] = Number.isInteger(numValue) ? numValue : parseFloat(value.trim());
+          }
+          // Keep as string
+          else {
+            transformed[key] = value.trim();
+          }
+        }
+        // If value is already a boolean or number, keep it as is
+        else {
           transformed[key] = value;
         }
       }

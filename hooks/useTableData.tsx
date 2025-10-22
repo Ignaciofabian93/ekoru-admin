@@ -42,12 +42,7 @@ export const useTableData = ({
 }: UseTableDataProps): UseTableDataReturn => {
   const query = getTableQuery(tableName);
   const queryName = `get${tableName.charAt(0).toUpperCase() + tableName.slice(1)}`;
-
-  console.log("=== useTableData Debug ===");
-  console.log("Table name:", tableName);
-  console.log("Query name:", queryName);
-  console.log("Query:", query);
-  console.log("Variables:", { page, pageSize, ...filters });
+  console.log("Executing query for table:", tableName, query);
 
   const { data, loading, error, refetch } = useQuery(query, {
     variables: {
@@ -59,14 +54,9 @@ export const useTableData = ({
     notifyOnNetworkStatusChange: true,
   });
 
-  console.log("Query result:", { data, loading, error });
-
   // Extract the data from the query result
   const tableData: Record<string, unknown>[] = data?.[queryName]?.nodes || [];
   const pageInfo: PageInfo | undefined = data?.[queryName]?.pageInfo;
-
-  console.log("Extracted data:", { tableData, pageInfo });
-  console.log("=========================");
 
   return {
     data: tableData,

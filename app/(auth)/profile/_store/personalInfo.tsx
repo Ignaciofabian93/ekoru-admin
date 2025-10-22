@@ -1,4 +1,4 @@
-import { PersonProfile, ServiceProfile, StoreProfile } from "@/types/user";
+import { PersonProfile, BusinessProfile } from "@/types/user";
 import { create } from "zustand";
 
 type PersonalInfoStore = {

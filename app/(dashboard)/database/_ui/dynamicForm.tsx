@@ -1,25 +1,37 @@
 "use client";
 import { useState } from "react";
+import { Save } from "lucide-react";
 import { FieldConfig } from "../_constants/newRecordFields";
+import { Text } from "@/ui/text/text";
 import Input from "@/ui/inputs/input";
 import Select from "@/ui/inputs/select";
 import Textarea from "@/ui/inputs/textarea";
 import Checkbox from "@/ui/inputs/checkbox";
-import { Text } from "@/ui/text/text";
-import clsx from "clsx";
+import ImageUpload from "@/ui/inputs/imageUpload";
+import MainButton from "@/ui/buttons/mainButton";
 
 type DynamicFormProps = {
   fields: FieldConfig[];
   onSubmit: (data: Record<string, unknown>) => void;
   onCancel: () => void;
   isLoading?: boolean;
+  initialValues?: Record<string, unknown>; // Add this for editing
 };
 
-export default function DynamicForm({ fields, onSubmit, onCancel, isLoading = false }: DynamicFormProps) {
+export default function DynamicForm({
+  fields,
+  onSubmit,
+  onCancel,
+  isLoading = false,
+  initialValues = {},
+}: DynamicFormProps) {
   const [formData, setFormData] = useState<Record<string, unknown>>(() => {
     const initialData: Record<string, unknown> = {};
     fields.forEach((field) => {
-      if (field.defaultValue !== undefined) {
+      // Prioritize initialValues, then defaultValue
+      if (initialValues[field.name] !== undefined) {
+        initialData[field.name] = initialValues[field.name];
+      } else if (field.defaultValue !== undefined) {
         initialData[field.name] = field.defaultValue;
       }
     });
@@ -328,6 +340,26 @@ export default function DynamicForm({ fields, onSubmit, onCancel, isLoading = fa
           </div>
         );
 
+      case "image":
+        return (
+          <div key={field.name} className="space-y-1">
+            <ImageUpload
+              label={field.label}
+              name={field.name}
+              value={(value as string) || ""}
+              onChange={(base64) => handleChange(field.name, base64)}
+              placeholder={field.placeholder}
+              required={field.required}
+              maxSizeMB={5}
+            />
+            {error && (
+              <Text variant="span" className="text-red-500 text-sm">
+                {error}
+              </Text>
+            )}
+          </div>
+        );
+
       default:
         return null;
     }
@@ -340,33 +372,8 @@ export default function DynamicForm({ fields, onSubmit, onCancel, isLoading = fa
 
       {/* Form Actions */}
       <div className="flex items-center justify-end gap-3 pt-4 border-t border-layout-light-200 dark:border-layout-dark-700">
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={isLoading}
-          className={clsx(
-            "px-4 py-2 rounded-lg font-medium transition-colors",
-            "bg-gray-100 dark:bg-layout-dark-700",
-            "text-gray-700 dark:text-gray-300",
-            "hover:bg-gray-200 dark:hover:bg-layout-dark-600",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
-          )}
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={clsx(
-            "px-4 py-2 rounded-lg font-medium transition-colors",
-            "bg-gradient-to-r from-lime-500 to-teal-600",
-            "text-white",
-            "hover:from-lime-600 hover:to-teal-700",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
-          )}
-        >
-          {isLoading ? "Guardando..." : "Guardar"}
-        </button>
+        <MainButton variant="outline" type="button" text="Cancelar" onClick={onCancel} hasIcon={false} />
+        <MainButton type="submit" text="Guardar" isLoading={isLoading} loadingText="Guardando..." icon={Save} />
       </div>
     </form>
   );

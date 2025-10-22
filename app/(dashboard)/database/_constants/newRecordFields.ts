@@ -14,7 +14,8 @@ export type FieldType =
   | "datetime"
   | "json"
   | "array"
-  | "relation";
+  | "relation"
+  | "image";
 
 export type FieldConfig = {
   name: string;
@@ -116,12 +117,12 @@ export const tableFieldConfigs: Record<string, FieldConfig[]> = {
     {
       name: "departmentImage",
       label: "Imagen del Departamento",
-      type: "text",
-      placeholder: "URL de la imagen",
+      type: "image",
+      placeholder: "Arrastra una imagen aquí o haz clic para seleccionar",
     },
   ],
 
-  DepartmentCategory: [
+  DepartmentCategories: [
     {
       name: "departmentCategoryName",
       label: "Nombre de Categoría",
@@ -139,7 +140,7 @@ export const tableFieldConfigs: Record<string, FieldConfig[]> = {
     },
   ],
 
-  ProductCategory: [
+  ProductCategories: [
     {
       name: "productCategoryName",
       label: "Nombre de Categoría",

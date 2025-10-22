@@ -54,6 +54,8 @@ export default function SessionWrapper({
       (async () => {
         try {
           const { data: userData, error } = await getMyData();
+          console.log("User Data: ", userData, "Error: ", error);
+
           if (userData) {
             handleSession(userData.getMyData);
             setLoading(false);
@@ -69,6 +71,8 @@ export default function SessionWrapper({
             const refreshResponse = await RefreshToken();
             if (refreshResponse?.success) {
               const { data: refreshedData } = await getMyData();
+              console.log("Refreshed User Data: ", refreshedData);
+
               handleSession(refreshedData.getMyData);
               setLoading(false);
               return;

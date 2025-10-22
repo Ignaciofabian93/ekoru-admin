@@ -8,9 +8,11 @@ import Pagination from "@/ui/pagination/pagination";
 
 interface DataTableProps {
   tableName: string;
+  handleEditRow?: (rowData: Record<string, unknown>) => void;
+  handleDeleteRow?: (rowData: Record<string, unknown>) => void;
 }
 
-export default function DataTable({ tableName }: DataTableProps) {
+export default function DataTable({ tableName, handleEditRow, handleDeleteRow }: DataTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
@@ -47,7 +49,15 @@ export default function DataTable({ tableName }: DataTableProps) {
     if (value === null || value === undefined) return "-";
     if (typeof value === "object") return JSON.stringify(value);
     if (typeof value === "boolean") return value ? "✓" : "✗";
-    return String(value);
+
+    const stringValue = String(value);
+    const maxLength = 40;
+
+    if (stringValue.length > maxLength) {
+      return stringValue.substring(0, maxLength) + "...";
+    }
+
+    return stringValue;
   };
 
   // Loading state
@@ -176,6 +186,7 @@ export default function DataTable({ tableName }: DataTableProps) {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       title="Editar"
+                      onClick={() => handleEditRow && handleEditRow(item)}
                     >
                       <Edit size={16} />
                     </motion.button>
@@ -184,6 +195,7 @@ export default function DataTable({ tableName }: DataTableProps) {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       title="Eliminar"
+                      onClick={() => handleDeleteRow && handleDeleteRow(item)}
                     >
                       <Trash2 size={16} />
                     </motion.button>

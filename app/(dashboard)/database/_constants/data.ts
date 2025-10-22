@@ -99,13 +99,13 @@ export const databaseTables: DatabaseTable[] = [
     category: "Catálogo",
   },
   {
-    name: "DepartmentCategory",
+    name: "DepartmentCategories",
     label: "Categorías de Departamento",
     description: "Categorías dentro de departamentos",
     category: "Catálogo",
   },
   {
-    name: "ProductCategory",
+    name: "ProductCategories",
     label: "Categorías de Producto",
     description: "Categorías específicas de productos",
     category: "Catálogo",

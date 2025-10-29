@@ -30,6 +30,7 @@ export default function PersonalInformation({
   counties,
 }: Props) {
   console.log("data:: ", data);
+  console.log("form data:: ", formData);
 
   return (
     <CardWrapper variant="elevated" className="!min-h-0">
@@ -91,7 +92,7 @@ export default function PersonalInformation({
                 <Select
                   label="País"
                   name="countryId"
-                  value={formData.country?.id || ""}
+                  value={formData.countryId || ""}
                   onChange={(value) => handleSelectChange("countryId", value)}
                   options={countries.map((c) => ({ label: c.country, value: c.id }))}
                   placeholder="Selecciona un país"
@@ -102,7 +103,7 @@ export default function PersonalInformation({
                 <Select
                   label="Región"
                   name="regionId"
-                  value={formData.region?.id || ""}
+                  value={formData.regionId || ""}
                   onChange={(value) => handleSelectChange("regionId", value)}
                   options={regions.map((r) => ({ label: r.region, value: r.id }))}
                   placeholder="Selecciona una región"
@@ -114,7 +115,7 @@ export default function PersonalInformation({
                 <Select
                   label="Ciudad"
                   name="cityId"
-                  value={formData.city?.id || ""}
+                  value={formData.cityId || ""}
                   onChange={(value) => handleSelectChange("cityId", value)}
                   options={cities.map((c) => ({ label: c.city, value: c.id }))}
                   placeholder="Selecciona una ciudad"
@@ -126,7 +127,7 @@ export default function PersonalInformation({
                 <Select
                   label="Comuna"
                   name="countyId"
-                  value={formData.county?.id || ""}
+                  value={formData.countyId || ""}
                   onChange={(value) => handleSelectChange("countyId", value)}
                   options={counties.map((c) => ({ label: c.county, value: c.id }))}
                   placeholder="Selecciona una comuna"

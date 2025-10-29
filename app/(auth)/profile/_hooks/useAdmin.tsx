@@ -62,6 +62,8 @@ export default function useAdmin() {
   const [updateAdmin, { loading }] = useMutation(UPDATE_ADMIN_PROFILE, {
     onCompleted: (response) => {
       const updatedAdmin = response.updateAdmin;
+      console.log("RESPONSE: ", response);
+
       // Update session store with new data
       handleSession(updatedAdmin);
       // Update local form data

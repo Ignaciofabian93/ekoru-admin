@@ -10,6 +10,7 @@ import {
   PackageSearch,
   Recycle,
   UserRoundPen,
+  UserRoundPlus,
   UserRoundSearch,
   UsersRound,
 } from "lucide-react";
@@ -21,6 +22,7 @@ import useAdminType from "@/hooks/useAdminType";
 
 const nameMap = {
   Home: "Inicio",
+  Admins: "Administradores",
   Users: "Usuarios",
   Products: "Productos",
   Blogs: "Blog",
@@ -33,6 +35,7 @@ const nameMap = {
 
 const navigation = [
   { name: nameMap.Home, href: "/home", icon: Home },
+  { name: nameMap.Admins, href: "/admins", icon: UserRoundPlus },
   { name: nameMap.Users, href: "/users", icon: UserRoundSearch },
   { name: nameMap.Products, href: "/products", icon: PackageSearch },
   { name: nameMap.Blogs, href: "/blogs", icon: Notebook },
@@ -104,6 +107,9 @@ export default function Navbar() {
             .filter((item) => {
               // Hide Database item for non-platform admins
               if (item.name === nameMap.Database && !isPlatformAdmin) {
+                return false;
+              }
+              if (item.name === nameMap.Admins && !isPlatformAdmin) {
                 return false;
               }
               return true;

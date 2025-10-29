@@ -6,6 +6,7 @@ export type Transaction = {
   pointsCollected: number;
   createdAt: Date;
   sellerId: string;
+  transactionFeeId?: number | null;
 };
 
 export type Exchange = {

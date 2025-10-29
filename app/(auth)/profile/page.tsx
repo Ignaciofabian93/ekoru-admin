@@ -1,98 +1,75 @@
 "use client";
-import { Calendar, Award, Eye } from "lucide-react";
+import { Shield, Building2 } from "lucide-react";
 import MainLayout from "@/ui/layout/mainLayout";
-import QuickActions from "./_ui/quickActions";
-import ImpactSummary from "./_ui/impactSummary";
-import RecentActivity from "./_ui/recentActivity";
-import ProfileNavigation from "./_ui/profileNavigation";
-import ProfileHeader from "./_ui/profileHeader";
+import clsx from "clsx";
+import ProfileHeader from "./_ui/header";
+import useAdmin from "./_hooks/useAdmin";
+import PersonalInformation from "./_ui/personalInformation";
+import RoleAndPermissions from "./_ui/permissions";
 
 export default function ProfilePage() {
+  const {
+    isEditing,
+    setIsEditing,
+    formData,
+    handleInputChange,
+    handleSelectChange,
+    handleSave,
+    handleCancel,
+    data,
+    isPlatformAdmin,
+    loading,
+    countries,
+    regions,
+    cities,
+    counties,
+  } = useAdmin();
+
   return (
     <MainLayout>
-      <section className="min-h-screen bg-gradient-to-br from-neutral-light/20 to-white">
-        {/* Profile Header */}
-        <ProfileHeader />
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        {/* Header Section */}
+        <ProfileHeader
+          isEditing={isEditing}
+          handleCancel={handleCancel}
+          handleSave={handleSave}
+          setIsEditing={setIsEditing}
+          loading={loading}
+        />
+        {/* Admin Type Badge */}
+        <section className="flex items-center gap-2">
+          <div
+            className={clsx(
+              "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold",
+              isPlatformAdmin
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                : "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+            )}
+          >
+            {isPlatformAdmin ? <Shield size={16} /> : <Building2 size={16} />}
+            {isPlatformAdmin ? "Administrador EKORU" : "Administrador de Negocio"}
+          </div>
+        </section>
 
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Quick Actions & Stats */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Quick Actions Grid */}
-              <QuickActions />
-
-              {/* Environmental Impact Summary */}
-              <ImpactSummary />
-
-              {/* Recent Activity */}
-              <RecentActivity />
-            </div>
-
-            {/* Right Column - Profile Navigation & Additional Info */}
-            <div className="space-y-8">
-              {/* Profile Navigation */}
-              <ProfileNavigation />
-
-              {/* Achievement Badge */}
-              <div className="bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl p-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Award className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-lg font-bold mb-2">
-                    Eco-Warrior Certificado
-                  </h3>
-                  <p className="text-white/80 text-sm mb-4">
-                    Has ahorrado más de 100kg de CO₂ este mes. ¡Sigue así!
-                  </p>
-                  <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm">
-                        Progreso al siguiente nivel
-                      </span>
-                      <span className="text-sm font-medium">75%</span>
-                    </div>
-                    <div className="w-full bg-white/20 rounded-full h-2">
-                      <div className="bg-white h-2 rounded-full w-3/4"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="bg-white rounded-xl shadow-sm border border-neutral/20 p-6">
-                <h3 className="text-lg font-bold text-text-primary mb-4">
-                  Estadísticas
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-text-muted">Perfil visitado</span>
-                    <div className="flex items-center text-text-primary">
-                      <Eye className="w-4 h-4 mr-1" />
-                      <span className="font-medium">1,247 veces</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-text-muted">Miembro desde</span>
-                    <div className="flex items-center text-text-primary">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      {/* <span className="font-medium">{user.joinDate}</span> */}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-text-muted">Reseñas escritas</span>
-                    <div className="flex items-center text-text-primary">
-                      <Award className="w-4 h-4 mr-1" />
-                      <span className="font-medium">23</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="flex flex-col space-y-6">
+          {/* Personal Information - Left Column */}
+          <PersonalInformation
+            isEditing={isEditing}
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSelectChange={handleSelectChange}
+            data={data}
+            countries={countries}
+            regions={regions}
+            cities={cities}
+            counties={counties}
+          />
+          <div className="flex-1 space-y-6">
+            {/* Role & Permissions */}
+            <RoleAndPermissions data={data} isPlatformAdmin={isPlatformAdmin} />
           </div>
         </div>
-      </section>
+      </div>
     </MainLayout>
   );
 }

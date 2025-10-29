@@ -38,15 +38,24 @@ export type AdminPermission =
 export type AdminType = "PLATFORM" | "BUSINESS";
 
 // Account and User Related Enums
-export type AccountType = "FREE" | "PLUS" | "PREMIUM";
 export type SellerType = "PERSON" | "STARTUP" | "COMPANY";
 export type ContactMethod = "EMAIL" | "WHATSAPP" | "PHONE" | "INSTAGRAM" | "FACEBOOK" | "WEBSITE" | "TIKTOK";
 
 // Business Related Enums
 export type BusinessType = "RETAIL" | "SERVICES" | "MIXED";
-export type BusinessFormalizationStatus = "NOT_REQUIRED" | "PENDING" | "IN_PROGRESS" | "FORMALIZED";
 export type BusinessSubscriptionPlan = "FREEMIUM" | "STARTUP" | "BASIC" | "ADVANCED" | "EXPERT";
 export type PersonSubscriptionPlan = "FREEMIUM" | "BASIC" | "ADVANCED";
+
+// Advertisement Related Enums
+export type AdvertisementType =
+  | "HERO_BANNER"
+  | "CATEGORY_HIGHLIGHT"
+  | "PRODUCT_HIGHLIGHT"
+  | "FEED_AD_BANNER"
+  | "NEWSLETTER_SPOTLIGHT"
+  | "PROMOTIONAL_SEARCH"
+  | "SOCIAL_MEDIA_SPOTLIGHT"
+  | "MONTHLY_PACKAGE";
 
 // Product Related Enums
 export type Badge =
@@ -145,19 +154,20 @@ export type NotificationType =
 export type NotificationPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
 // Blog Related Enums
-export enum BlogCategory {
-  RECYCLING = "RECYCLING",
-  POLLUTION = "POLLUTION",
-  SUSTAINABILITY = "SUSTAINABILITY",
-  CIRCULAR_ECONOMY = "CIRCULAR_ECONOMY",
-  USED_PRODUCTS = "USED_PRODUCTS",
-  REUSE = "REUSE",
-  ENVIRONMENT = "ENVIRONMENT",
-  UPCYCLING = "UPCYCLING",
-  RESPONSIBLE_CONSUMPTION = "RESPONSIBLE_CONSUMPTION",
-  ECO_TIPS = "ECO_TIPS",
-  ENVIRONMENTAL_IMPACT = "ENVIRONMENTAL_IMPACT",
-  SUSTAINABLE_LIVING = "SUSTAINABLE_LIVING",
-  OTHER = "OTHER",
-  SECURITY = "SECURITY",
-}
+export type BlogType =
+  | "RECYCLING"
+  | "POLLUTION"
+  | "SUSTAINABILITY"
+  | "CIRCULAR_ECONOMY"
+  | "USED_PRODUCTS"
+  | "REUSE"
+  | "ENVIRONMENT"
+  | "UPCYCLING"
+  | "RESPONSIBLE_CONSUMPTION"
+  | "ECO_TIPS"
+  | "ENVIRONMENTAL_IMPACT"
+  | "SUSTAINABLE_LIVING"
+  | "OTHER"
+  | "SECURITY";
+
+export type BlogReactionType = "LIKE" | "DISLIKE";

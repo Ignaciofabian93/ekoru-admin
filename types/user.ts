@@ -1,15 +1,14 @@
 import {
-  type AccountType,
   type ContactMethod,
   type SellerType,
   type AdminRole,
   type AdminPermission,
   type AdminType,
   type BusinessType,
-  type BusinessFormalizationStatus,
-  type BusinessSubscriptionPlan,
   type PersonSubscriptionPlan,
+  type BusinessSubscriptionPlan,
 } from "./enums";
+import { City, Country, County, Region } from "./location";
 
 // Admin Types
 export type Admin = {
@@ -34,6 +33,10 @@ export type Admin = {
   countryId?: number | null;
   countyId?: number | null;
   regionId?: number | null;
+  country?: Country | null;
+  region?: Region | null;
+  city?: City | null;
+  county?: County | null;
 };
 
 export type AdminActivityLog = {
@@ -42,10 +45,10 @@ export type AdminActivityLog = {
   action: string;
   entityType?: string | null;
   entityId?: string | null;
-  changes?: any | null;
+  changes?: string | null;
   ipAddress?: string | null;
   userAgent?: string | null;
-  metadata?: any | null;
+  metadata?: string | null;
   createdAt: Date;
 };
 
@@ -67,13 +70,10 @@ export type Seller = {
   phone?: string | null;
   website?: string | null;
   preferredContactMethod?: ContactMethod | null;
-  socialMediaLinks?: any | null;
-  accountType?: AccountType | null;
+  socialMediaLinks?: string | null;
   points: number;
-  sellerCategoryId?: number | null;
-  locale: string;
   sellerLevelId?: number | null;
-  timezone: string;
+  profile: PersonProfile | BusinessProfile;
 };
 
 export type SellerPreferences = {
@@ -101,49 +101,61 @@ export type PersonProfile = {
   profileImage?: string | null;
   coverImage?: string | null;
   allowExchanges: boolean;
+  personMembershipId?: number | null;
 };
 
 export type BusinessProfile = {
   id: string;
   sellerId: string;
   businessName: string;
-  displayName?: string | null;
   description?: string | null;
   logo?: string | null;
   coverImage?: string | null;
   businessType: BusinessType;
   legalBusinessName?: string | null;
   taxId?: string | null;
-  businessActivity?: string | null;
   businessStartDate?: Date | null;
   legalRepresentative?: string | null;
   legalRepresentativeTaxId?: string | null;
-  formalizationStatus: BusinessFormalizationStatus;
-  formalizationDeadline?: Date | null;
-  formalizationNotes?: string | null;
-  minOrderAmount?: number | null;
   shippingPolicy?: string | null;
   returnPolicy?: string | null;
   serviceArea?: string | null;
   yearsOfExperience?: number | null;
-  licenseNumber?: string | null;
-  insuranceInfo?: string | null;
   certifications: string[];
-  emergencyService: boolean;
   travelRadius?: number | null;
-  businessHours?: any | null;
-  taxDocuments: string[];
-  verificationDocuments: string[];
+  businessHours?: string | null;
+  businessMembershipId?: number | null;
   createdAt: Date;
   updatedAt: Date;
 };
 
-export type SellerCategory = {
+// Seller Gamification Types
+export type SellerLabel = {
   id: number;
-  name: string;
-  categoryDiscountAmount: number;
-  pointsThreshold: number;
-  level: number;
+  labelName: string;
+  transactionKind: string;
+  transactionsRequired: number;
+  description?: string | null;
+  badgeIcon?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type SellerAchievedLabel = {
+  id: number;
+  sellerId: string;
+  labelId: number;
+  achievedAt: Date;
+  currentCount?: number | null;
+};
+
+export type PointsByTransactionKind = {
+  id: number;
+  transactionKind: string;
+  pointsAwarded: number;
+  description?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type SellerLevel = {
@@ -151,10 +163,46 @@ export type SellerLevel = {
   levelName: string;
   minPoints: number;
   maxPoints?: number | null;
-  benefits?: any | null;
+  benefits?: string | null;
   badgeIcon?: string | null;
   createdAt: Date;
   updatedAt: Date;
+};
+
+// Membership Types
+export type PersonMembership = {
+  id: number;
+  membershipType: PersonSubscriptionPlan;
+  price: number;
+  description: string[];
+  durationMonths: number;
+  startDate: Date;
+  endDate?: Date | null;
+  isActive: boolean;
+  autoRenew: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type BusinessMembership = {
+  id: number;
+  membershipType: BusinessSubscriptionPlan;
+  price: number;
+  description: string[];
+  durationMonths: number;
+  startDate: Date;
+  endDate?: Date | null;
+  isActive: boolean;
+  autoRenew: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type TransactionFee = {
+  id: number;
+  sellerTypeFee: SellerType;
+  feePercentage: number;
+  description: string;
 };
 
 export type CountryConfig = {
@@ -169,7 +217,7 @@ export type CountryConfig = {
   defaultLocale: string;
   isActive: boolean;
   phonePrefix: string;
-  availablePaymentProviders: any;
+  availablePaymentProviders: string[];
   createdAt: Date;
   updatedAt: Date;
 };

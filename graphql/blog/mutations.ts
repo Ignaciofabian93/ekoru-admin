@@ -10,7 +10,12 @@ export const CREATE_BLOG_POST = gql`
       publishedAt
       createdAt
       updatedAt
-      category
+      blogCategory {
+        id
+        name
+        icon
+        description
+      }
       author {
         id
         name
@@ -31,7 +36,12 @@ export const UPDATE_BLOG_POST = gql`
       publishedAt
       createdAt
       updatedAt
-      category
+      blogCategory {
+        id
+        name
+        icon
+        description
+      }
       author {
         id
         name
@@ -58,7 +68,12 @@ export const PUBLISH_BLOG_POST = gql`
       publishedAt
       createdAt
       updatedAt
-      category
+      blogCategory {
+        id
+        name
+        icon
+        description
+      }
       author {
         id
         name
@@ -79,7 +94,12 @@ export const UNPUBLISH_BLOG_POST = gql`
       publishedAt
       createdAt
       updatedAt
-      category
+      blogCategory {
+        id
+        name
+        icon
+        description
+      }
       author {
         id
         name

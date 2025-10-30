@@ -1,5 +1,5 @@
 import { BlogPost } from "@/types/blog";
-import { BlogCard } from "@/ui/cards/blog";
+import { BlogCard } from "./blogCard";
 import { Text } from "@/ui/text/text";
 import { Title } from "@/ui/text/title";
 import { ApolloError } from "@apollo/client";

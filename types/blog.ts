@@ -1,4 +1,12 @@
-import { type BlogType, type BlogReactionType } from "./enums";
+import { Admin } from "./user";
+
+export type BlogCategory = {
+  id: number;
+  name: string;
+  icon?: string | null;
+  description?: string | null;
+  posts?: BlogPost[];
+};
 
 export type BlogPost = {
   id: number;
@@ -9,33 +17,8 @@ export type BlogPost = {
   publishedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
-  blogType: BlogType;
-  categoryId: number;
-  tags: string[];
-  coverImage?: string | null;
-  slug?: string | null;
-  readTime?: number | null;
-  viewCount: number;
-  author: {
-    id: string;
-    name: string;
-    lastName?: string | null;
-    email: string;
-  };
-};
-
-export type BlogReaction = {
-  id: number;
-  blogPostId: number;
-  sellerId: string;
-  reactionType: BlogReactionType;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type BlogCategory = {
-  id: number;
-  category: string;
+  blogCategory: BlogCategory;
+  author: Admin;
 };
 
 export type CommunityPost = {

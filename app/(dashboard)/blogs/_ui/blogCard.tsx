@@ -1,8 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Calendar, Edit, Trash2, CheckCircle, XCircle, UserRound } from "lucide-react";
-import { BlogCategory } from "@/types/enums";
-import { getCategoryLabel } from "@/utils/blogTranslations";
+import { BlogCategory } from "@/types/blog";
 import { Title } from "@/ui/text/title";
 import { Text } from "@/ui/text/text";
 import clsx from "clsx";
@@ -11,7 +10,7 @@ interface BlogCardProps {
   id: number;
   title: string;
   content: string;
-  category: BlogCategory;
+  blogCategory: BlogCategory;
   isPublished: boolean;
   publishedAt?: Date | null;
   createdAt: Date;
@@ -21,28 +20,27 @@ interface BlogCardProps {
   authorName?: string;
 }
 
-const categoryColors: Record<BlogCategory, string> = {
-  RECYCLING: "bg-green-100 text-green-800",
-  POLLUTION: "bg-red-100 text-red-800",
-  SUSTAINABILITY: "bg-emerald-100 text-emerald-800",
-  CIRCULAR_ECONOMY: "bg-blue-100 text-blue-800",
-  USED_PRODUCTS: "bg-purple-100 text-purple-800",
-  REUSE: "bg-teal-100 text-teal-800",
-  ENVIRONMENT: "bg-lime-100 text-lime-800",
-  UPCYCLING: "bg-cyan-100 text-cyan-800",
-  RESPONSIBLE_CONSUMPTION: "bg-indigo-100 text-indigo-800",
-  ECO_TIPS: "bg-yellow-100 text-yellow-800",
-  ENVIRONMENTAL_IMPACT: "bg-orange-100 text-orange-800",
-  SUSTAINABLE_LIVING: "bg-green-100 text-green-800",
-  SECURITY: "bg-slate-100 text-slate-800",
-  OTHER: "bg-gray-100 text-gray-800",
-};
+const categoryColors: string[] = [
+  "bg-green-100 text-green-800",
+  "bg-red-100 text-red-800",
+  "bg-emerald-100 text-emerald-800",
+  "bg-blue-100 text-blue-800",
+  "bg-purple-100 text-purple-800",
+  "bg-teal-100 text-teal-800",
+  "bg-lime-100 text-lime-800",
+  "bg-cyan-100 text-cyan-800",
+  "bg-indigo-100 text-indigo-800",
+  "bg-yellow-100 text-yellow-800",
+  "bg-orange-100 text-orange-800",
+  "bg-slate-100 text-slate-800",
+  "bg-gray-100 text-gray-800",
+];
 
 export function BlogCard({
   id,
   title,
   content,
-  category,
+  blogCategory,
   isPublished,
   createdAt,
   onEdit,
@@ -56,6 +54,9 @@ export function BlogCard({
     month: "short",
     day: "numeric",
   });
+
+  // Get color based on category id (cycle through available colors)
+  const categoryColor = categoryColors[blogCategory.id % categoryColors.length];
 
   return (
     <motion.div
@@ -86,8 +87,8 @@ export function BlogCard({
       <div className="p-6">
         {/* Category Badge */}
         <div className="mb-3">
-          <span className={clsx("inline-block px-3 py-1 rounded-full text-xs font-semibold", categoryColors[category])}>
-            {getCategoryLabel(category)}
+          <span className={clsx("inline-block px-3 py-1 rounded-full text-xs font-semibold", categoryColor)}>
+            {blogCategory.name}
           </span>
         </div>
 

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_BLOG_POSTS = gql`
-  query GetBlogPosts($pageSize: Int, $page: Int, $isPublished: Boolean, $category: BlogCategory) {
-    getBlogPosts(pageSize: $pageSize, page: $page, isPublished: $isPublished, category: $category) {
+  query GetBlogPosts($pageSize: Int, $page: Int, $isPublished: Boolean, $blogType: BlogType) {
+    getBlogPosts(pageSize: $pageSize, page: $page, isPublished: $isPublished, blogType: $blogType) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -22,7 +22,12 @@ export const GET_BLOG_POSTS = gql`
         publishedAt
         createdAt
         updatedAt
-        category
+        blogCategory {
+          id
+          name
+          icon
+          description
+        }
         author {
           id
           email
@@ -44,7 +49,12 @@ export const GET_BLOG_POST = gql`
       publishedAt
       createdAt
       updatedAt
-      category
+      blogCategory {
+        id
+        name
+        icon
+        description
+      }
       author {
         id
         name
@@ -65,13 +75,29 @@ export const GET_BLOG_POSTS_BY_AUTHOR = gql`
       publishedAt
       createdAt
       updatedAt
-      category
+      blogCategory {
+        id
+        name
+        icon
+        description
+      }
       author {
         id
         name
         lastName
         email
       }
+    }
+  }
+`;
+
+export const GET_BLOG_CATEGORIES = gql`
+  query GetBlogCategories {
+    getBlogCategories {
+      id
+      name
+      description
+      icon
     }
   }
 `;

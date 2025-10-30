@@ -106,10 +106,8 @@ export default function Navbar() {
           {navigation
             .filter((item) => {
               // Hide Database item for non-platform admins
-              if (item.name === nameMap.Database && !isPlatformAdmin) {
-                return false;
-              }
-              if (item.name === nameMap.Admins && !isPlatformAdmin) {
+              const bannedList = [nameMap.Database, nameMap.Admins];
+              if (bannedList.includes(item.name) && !isPlatformAdmin) {
                 return false;
               }
               return true;

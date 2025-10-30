@@ -1,89 +1,36 @@
 "use client";
-import { useState } from "react";
-import { BlogCategory } from "@/types/enums";
-import { getCategoryLabel } from "@/utils/blogTranslations";
+import { BlogCategory } from "@/types/blog";
+import { List, Pencil, Save } from "lucide-react";
 import Input from "@/ui/inputs/input";
 import Textarea from "@/ui/inputs/textarea";
 import Select from "@/ui/inputs/select";
 import MainButton from "@/ui/buttons/mainButton";
-import { Save } from "lucide-react";
+import useBlogForm from "../_hooks/useBlogForm";
 
-interface BlogFormData {
+export type BlogFormData = {
   title: string;
   content: string;
-  category: BlogCategory;
+  blogCategoryId: number;
   isPublished: boolean;
-}
+};
 
-interface BlogFormProps {
-  initialData?: Partial<BlogFormData>;
+export type BlogFormProps = {
+  initialData?: {
+    title?: string;
+    content?: string;
+    blogCategory?: BlogCategory;
+    isPublished?: boolean;
+  };
   onSubmit: (data: BlogFormData) => void;
   onCancel: () => void;
   isLoading?: boolean;
-}
+};
 
-const categoryOptions = Object.values(BlogCategory).map((cat) => ({
-  value: cat,
-  label: getCategoryLabel(cat),
-}));
-
-export function BlogForm({ initialData, onSubmit, onCancel, isLoading = false }: BlogFormProps) {
-  const [formData, setFormData] = useState<{
-    title: string;
-    content: string;
-    category: BlogCategory | "";
-    isPublished: boolean;
-  }>({
-    title: initialData?.title || "",
-    content: initialData?.content || "",
-    category: initialData?.category || ("" as const),
-    isPublished: initialData?.isPublished || false,
+export default function BlogForm({ initialData, onSubmit, onCancel, isLoading = false }: BlogFormProps) {
+  const { handleSubmit, formData, handleInputChange, errors, categoryOptions, loadingCategories } = useBlogForm({
+    initialData,
+    onSubmit,
   });
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const handleInputChange = (field: string, value: string | boolean | BlogCategory) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
-  };
-
-  const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = "El título es requerido";
-    } else if (formData.title.length < 5) {
-      newErrors.title = "El título debe tener al menos 5 caracteres";
-    }
-
-    if (!formData.content.trim()) {
-      newErrors.content = "El contenido es requerido";
-    } else if (formData.content.length < 20) {
-      newErrors.content = "El contenido debe tener al menos 20 caracteres";
-    }
-
-    if (!formData.category) {
-      newErrors.category = "La categoría es requerida";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate() && formData.category) {
-      onSubmit(formData as BlogFormData);
-    } else {
-    }
-  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -96,6 +43,7 @@ export function BlogForm({ initialData, onSubmit, onCancel, isLoading = false }:
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("title", e.target.value)}
           placeholder="Ingresa el título del post..."
           className={errors.title ? "border-red-500" : ""}
+          icon={Pencil}
         />
         {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
       </div>
@@ -104,14 +52,18 @@ export function BlogForm({ initialData, onSubmit, onCancel, isLoading = false }:
       <div>
         <Select
           label="Categoría"
-          value={formData.category}
-          onChange={(value) => handleInputChange("category", value as BlogCategory)}
+          value={formData.blogCategoryId.toString()}
+          onChange={(value) => {
+            const numValue = typeof value === "string" ? parseInt(value) : value;
+            handleInputChange("blogCategoryId", numValue);
+          }}
           options={categoryOptions}
           placeholder="Selecciona una categoría"
-          className={errors.category ? "border-red-500" : ""}
-          disabled={isLoading}
+          className={errors.blogCategoryId ? "border-red-500" : ""}
+          disabled={isLoading || loadingCategories}
+          icon={List}
         />
-        {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category}</p>}
+        {errors.blogCategoryId && <p className="mt-1 text-sm text-red-500">{errors.blogCategoryId}</p>}
       </div>
 
       {/* Content */}

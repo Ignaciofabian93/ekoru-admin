@@ -1,46 +1,22 @@
-import { Seller, StartupProfile, CompanyProfile, PersonProfile } from "@/types/user";
+import { Seller, PersonProfile, BusinessProfile } from "@/types/user";
 import { SellerType } from "@/types/enums";
 
 /**
  * Type guards for different seller profiles
  */
-export const isPersonProfile = (profile: PersonProfile | StartupProfile | CompanyProfile): profile is PersonProfile => {
-  return profile.__typename === "PersonProfile";
+export const isPersonProfile = (profile: PersonProfile | BusinessProfile): profile is PersonProfile => {
+  return "firstName" in profile;
 };
 
-export const isStartupProfile = (
-  profile: PersonProfile | StartupProfile | CompanyProfile
-): profile is StartupProfile => {
-  return profile.__typename === "StartupProfile";
-};
-
-export const isCompanyProfile = (
-  profile: PersonProfile | StartupProfile | CompanyProfile
-): profile is CompanyProfile => {
-  return profile.__typename === "CompanyProfile";
+export const isBusinessProfile = (profile: PersonProfile | BusinessProfile): profile is BusinessProfile => {
+  return "businessName" in profile;
 };
 
 /**
- * Check if a seller is a business (startup or company)
+ * Check if a seller is a business
  */
 export const isBusiness = (seller: Seller): boolean => {
   return seller.sellerType === "STARTUP" || seller.sellerType === "COMPANY";
-};
-
-/**
- * Check if business has legal registration
- */
-export const hasBusinessRegistration = (seller: Seller): boolean => {
-  if (!isBusiness(seller)) return false;
-
-  const profile = seller.profile;
-  if (isStartupProfile(profile)) {
-    return profile.hasBusinessRegistration;
-  }
-  if (isCompanyProfile(profile)) {
-    return true; // Companies always have registration
-  }
-  return false;
 };
 
 /**
@@ -53,8 +29,8 @@ export const getBusinessName = (seller: Seller): string => {
     return profile.displayName || `${profile.firstName} ${profile.lastName || ""}`.trim();
   }
 
-  if (isStartupProfile(profile) || isCompanyProfile(profile)) {
-    return profile.displayName || profile.businessName;
+  if (isBusinessProfile(profile)) {
+    return profile.businessName;
   }
 
   return "Unknown Business";
@@ -64,23 +40,7 @@ export const getBusinessName = (seller: Seller): string => {
  * Check if seller is fully verified
  */
 export const isFullyVerified = (seller: Seller): boolean => {
-  if (!seller.isVerified) return false;
-
-  const profile = seller.profile;
-
-  if (isPersonProfile(profile)) {
-    return true; // Person verification is handled at seller level
-  }
-
-  if (isStartupProfile(profile)) {
-    return profile.identityVerified && profile.phoneVerified && profile.emailVerified;
-  }
-
-  if (isCompanyProfile(profile)) {
-    return profile.documentsVerified && profile.identityVerified && profile.phoneVerified && profile.emailVerified;
-  }
-
-  return false;
+  return seller.isVerified && seller.isActive;
 };
 
 /**
@@ -98,62 +58,14 @@ export const getVerificationStatus = (
     missingVerifications.push("Account verification");
   }
 
-  const profile = seller.profile;
-
-  if (isStartupProfile(profile)) {
-    if (!profile.identityVerified) missingVerifications.push("Identity verification");
-    if (!profile.phoneVerified) missingVerifications.push("Phone verification");
-    if (!profile.emailVerified) missingVerifications.push("Email verification");
-  }
-
-  if (isCompanyProfile(profile)) {
-    if (!profile.documentsVerified) missingVerifications.push("Documents verification");
-    if (!profile.identityVerified) missingVerifications.push("Identity verification");
-    if (!profile.phoneVerified) missingVerifications.push("Phone verification");
-    if (!profile.emailVerified) missingVerifications.push("Email verification");
+  if (!seller.isActive) {
+    missingVerifications.push("Account activation");
   }
 
   return {
     isFullyVerified: missingVerifications.length === 0,
     missingVerifications,
   };
-};
-
-/**
- * Get Chilean company type label
- */
-export const getCompanyTypeLabel = (companyType: CompanyProfile["companyType"]): string => {
-  const labels: Record<CompanyProfile["companyType"], string> = {
-    EMPRESA_INDIVIDUAL: "Empresa Individual",
-    SPA: "Sociedad por Acciones (SpA)",
-    LTDA: "Sociedad de Responsabilidad Limitada (Ltda.)",
-    SA: "Sociedad Anónima (S.A.)",
-    EIRL: "Empresa Individual de Responsabilidad Limitada (E.I.R.L.)",
-    OTHER: "Otro tipo de empresa",
-  };
-
-  return labels[companyType];
-};
-
-/**
- * Check if startup should be promoted to company
- * Based on business maturity indicators
- */
-export const shouldPromoteToCompany = (seller: Seller): boolean => {
-  if (seller.sellerType !== "STARTUP") return false;
-
-  const profile = seller.profile;
-  if (!isStartupProfile(profile)) return false;
-
-  // Suggest promotion if:
-  // - Has business registration
-  // - Has significant monthly orders (e.g., > 50)
-  // - Has employees
-  const hasRegistration = profile.hasBusinessRegistration;
-  const hasSignificantOrders = (profile.monthlyOrdersCount || 0) > 50;
-  const hasEmployees = (profile.employeeCount || 0) > 0;
-
-  return hasRegistration && (hasSignificantOrders || hasEmployees);
 };
 
 /**

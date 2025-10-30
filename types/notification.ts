@@ -10,7 +10,7 @@ export type Notification = {
   priority: NotificationPriority;
   relatedId?: string | null;
   actionUrl?: string | null;
-  metadata?: any | null;
+  metadata?: string | null;
   createdAt: Date;
   readAt?: Date | null;
 };

@@ -45,7 +45,7 @@ export type Payment = {
   payerId: string;
   receiverId: string;
   failureReason?: string | null;
-  metadata?: any | null;
+  metadata?: string | null;
   createdAt: Date;
   updatedAt: Date;
   processedAt?: Date | null;
@@ -71,7 +71,7 @@ export type PaymentWebhook = {
   provider: ChileanPaymentProvider;
   eventType: string;
   externalId: string;
-  payload: any;
+  payload: string;
   processed: boolean;
   processingError?: string | null;
   createdAt: Date;
@@ -85,7 +85,7 @@ export type PaymentTransaction = {
   amount?: number | null;
   status: string;
   description?: string | null;
-  metadata?: any | null;
+  metadata?: string | null;
   createdAt: Date;
   createdBy?: string | null;
 };

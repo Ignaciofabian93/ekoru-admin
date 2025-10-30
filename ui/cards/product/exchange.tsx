@@ -1,5 +1,4 @@
 import { Product } from "@/types/product";
-import { getBadgeColor } from "@/utils/badgeColor";
 import Image from "next/image";
 
 type Props = {
@@ -30,9 +29,7 @@ export default function ExchangeCard({ product }: Props) {
       </figure>
       <div className="p-3">
         <header className="flex items-center justify-between mb-2">
-          <span className="text-text-muted text-xs truncate">
-            {/* {product.category} */}
-          </span>
+          <span className="text-text-muted text-xs truncate">{/* {product.category} */}</span>
           <span className="text-text-secondary text-xs flex-shrink-0 ml-2">
             {/* {product.interested} interesados */}
           </span>
@@ -42,9 +39,7 @@ export default function ExchangeCard({ product }: Props) {
         </h3>
         {/* <p className="text-text-muted text-xs mb-2">Por {product.owner}</p> */}
         <div className="bg-primary/5 rounded-lg p-2 mb-3">
-          <p className="text-primary text-xs font-medium">
-            {/* Busca: {product.exchangeFor} */}
-          </p>
+          <p className="text-primary text-xs font-medium">{/* Busca: {product.exchangeFor} */}</p>
         </div>
         <footer>
           <button

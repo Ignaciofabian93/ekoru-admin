@@ -1,9 +1,9 @@
 import MainLayout from "@/ui/layout/mainLayout";
 
-export default function ImpactPage() {
+export default function UsersPage() {
   return (
     <MainLayout>
-      <div>Impact</div>
+      <div>Users</div>
     </MainLayout>
   );
 }

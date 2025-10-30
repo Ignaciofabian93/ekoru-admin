@@ -6,26 +6,26 @@ interface AdminCardProps {
   canEdit?: boolean;
 }
 
-function formatLastLogin(lastLoginAt?: string): string {
-  if (!lastLoginAt) return "Never";
+// function formatLastLogin(lastLoginAt?: string): string {
+//   if (!lastLoginAt) return "Never";
 
-  const now = new Date();
-  const loginDate = new Date(lastLoginAt);
-  const diffMs = now.getTime() - loginDate.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHours / 24);
+//   const now = new Date();
+//   const loginDate = new Date(lastLoginAt);
+//   const diffMs = now.getTime() - loginDate.getTime();
+//   const diffMins = Math.floor(diffMs / 60000);
+//   const diffHours = Math.floor(diffMins / 60);
+//   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+//   if (diffMins < 1) return "Just now";
+//   if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
+//   if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+//   if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
 
-  return loginDate.toLocaleDateString();
-}
+//   return loginDate.toLocaleDateString();
+// }
 
 export default function AdminCard({ admin, onEdit, canEdit = false }: AdminCardProps) {
-  const lastLogin = formatLastLogin(admin.lastLoginAt);
+  const lastLogin = "";
 
   return (
     <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -68,13 +68,6 @@ export default function AdminCard({ admin, onEdit, canEdit = false }: AdminCardP
               <p className="text-sm">{lastLogin}</p>
             </div>
           </div>
-
-          {admin.phone && (
-            <div className="mt-3 pt-3 border-t">
-              <p className="text-xs text-gray-500">Phone</p>
-              <p className="text-sm">{admin.phone}</p>
-            </div>
-          )}
         </div>
 
         {canEdit && onEdit && (

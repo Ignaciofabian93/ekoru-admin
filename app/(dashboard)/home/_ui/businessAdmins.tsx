@@ -1,6 +1,4 @@
 import { useState } from "react";
-import useAdmins from "../_hooks/useAdmins";
-import AdminCard from "../_components/adminCard";
 import CreateAdminModal, { CreateAdminData } from "../_components/createAdminModal";
 import { Admin } from "@/types/user";
 import useSessionStore from "@/store/session";
@@ -22,11 +20,13 @@ export default function BusinessAdminsSection() {
   //   sellerId: sellerId, // Filter by seller
   // });
 
-  const handleEditAdmin = (admin: Admin) => {
-    // TODO: Implement edit functionality
-  };
+  // const handleEditAdmin = (admin: Admin) => {
+  //   // TODO: Implement edit functionality
+  // };
 
   const handleCreateAdmin = async (data: CreateAdminData) => {
+    console.log(data);
+
     // TODO: Implement admin creation with GraphQL mutation
     setShowModal(false);
     // After successful creation, refetch admins

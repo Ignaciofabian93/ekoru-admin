@@ -4,13 +4,13 @@ const getEndpoints = () => {
   switch (ENVIRONMENT) {
     case "production":
       return {
-        graphql: "https://gateway.ekoru.cl/graphql",
-        rest: "https://gateway.ekoru.cl/session",
+        graphql: "https://api.ekoru.cl/graphql",
+        rest: "https://api.ekoru.cl/session",
       };
     case "qa":
       return {
-        graphql: "https://qa.gateway.ekoru.cl/graphql",
-        rest: "https://qa.gateway.ekoru.cl/session",
+        graphql: "https://api.ekoru.cl/graphql",
+        rest: "https://api.ekoru.cl/session",
       };
     default:
       return {

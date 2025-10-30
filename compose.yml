@@ -6,7 +6,7 @@ services:
     restart: always
     container_name: admin-app
     ports:
-      - "5000:5000"
+      - "5000:3000"
     env_file:
       - .env
     networks:
